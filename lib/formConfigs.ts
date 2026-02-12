@@ -6,7 +6,8 @@ export const formConfigs: Record<string, FormConfig> = {
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true },
       { name: 'description', label: 'Description', type: 'textarea', required: false },
-      { name: 'location', label: 'Location', type: 'text', required: false }
+      { name: 'location', label: 'Location', type: 'text', required: false },
+      { name: 'photos', label: 'Photo URLs (one per line)', type: 'textarea', required: false }
     ]
   },
   date: {

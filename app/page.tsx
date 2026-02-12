@@ -68,6 +68,9 @@ export default function Home() {
         item[key] = value === 'Yes';
       } else if (key === 'ratingZ' || key === 'ratingS' || key === 'rating') {
         item[key] = value ? Number(value) : undefined;
+      } else if (key === 'photos' && value) {
+        // Convert textarea input to array of photo URLs
+        item[key] = (value as string).split('\n').map(url => url.trim()).filter(url => url.length > 0);
       } else {
         item[key] = value;
       }
@@ -123,6 +126,15 @@ export default function Home() {
             </div>
             {memory.description && <p>{memory.description}</p>}
             {memory.location && <p><strong>📍 {memory.location}</strong></p>}
+            {memory.photos && memory.photos.length > 0 && (
+              <div className="photo-gallery">
+                {memory.photos.map((photo, idx) => (
+                  <div key={idx} className="photo-item">
+                    <img src={photo} alt={`${memory.title} ${idx + 1}`} />
+                  </div>
+                ))}
+              </div>
+            )}
           </>
         );
         break;
@@ -652,7 +664,13 @@ export default function Home() {
               <form onSubmit={handleFormSubmit}>
                 <div>
                   {formConfigs[currentType].fields.map((field) => {
-                    const fieldValue = editingItem ? editingItem[field.name] : '';
+                    let fieldValue = editingItem ? editingItem[field.name] : '';
+
+                    // Convert photos array to newline-separated string for editing
+                    if (field.name === 'photos' && editingItem && Array.isArray(editingItem.photos)) {
+                      fieldValue = editingItem.photos.join('\n');
+                    }
+
                     const selectValue = field.name === 'visited' && editingItem ?
                       (editingItem.visited ? 'Yes' : 'No') : fieldValue;
 

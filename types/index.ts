@@ -46,9 +46,10 @@ export interface ThingToDo extends BaseItem {
 // Legacy types for backward compatibility
 export interface Memory extends BaseItem {
   title: string;
-  date: string;
-  description: string;
+  date?: string;
+  description?: string;
   location?: string;
+  photos?: string[]; // Array of image URLs or base64 strings
 }
 
 export interface Restaurant extends BaseItem {
