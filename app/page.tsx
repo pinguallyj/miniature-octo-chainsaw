@@ -29,6 +29,7 @@ export default function Home() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
 
   const navigateToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
@@ -38,6 +39,7 @@ export default function Home() {
   const openModal = (type: ItemType, item?: any) => {
     setCurrentType(type);
     setEditingItem(item || null);
+    setUploadedPhotos([]);
     setIsModalOpen(true);
   };
 
@@ -46,6 +48,23 @@ export default function Home() {
     setCurrentType(null);
     setSelectedDate(null);
     setEditingItem(null);
+    setUploadedPhotos([]);
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const photoPromises = Array.from(files).map(file => {
+      return new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(file);
+      });
+    });
+
+    const photos = await Promise.all(photoPromises);
+    setUploadedPhotos(prev => [...prev, ...photos]);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -68,12 +87,15 @@ export default function Home() {
         item[key] = value === 'Yes';
       } else if (key === 'ratingZ' || key === 'ratingS' || key === 'rating') {
         item[key] = value ? Number(value) : undefined;
-      } else if (key === 'photos' && value) {
-        // Convert textarea input to array of photo URLs
-        item[key] = (value as string).split('\n').map(url => url.trim()).filter(url => url.length > 0);
       } else {
         item[key] = value;
       }
+    }
+
+    // Add photos for memories
+    if (currentType === 'memory') {
+      const existingPhotos = editingItem?.photos || [];
+      item.photos = [...existingPhotos, ...uploadedPhotos];
     }
 
     const sectionKey = getSectionKey(currentType) as keyof AppData;
@@ -581,13 +603,27 @@ export default function Home() {
               <motion.button
                 className="back-btn"
                 onClick={() => setCurrentView('landing')}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ x: -3 }}
                 whileTap={{ scale: 0.95 }}
+                title="Back to Home"
               >
-                ← Back to Home
+                ← Back
               </motion.button>
               <h1 className="title">{activeSection?.title}</h1>
             </header>
+
+            <nav className="mobile-nav">
+              {sections.map(section => (
+                <button
+                  key={section.id}
+                  className={`mobile-nav-btn ${currentSection === section.id ? 'active' : ''}`}
+                  onClick={() => setCurrentSection(section.id)}
+                  title={section.label}
+                >
+                  {section.icon}
+                </button>
+              ))}
+            </nav>
 
             <nav className="nav">
               {sections.map(section => (
@@ -664,13 +700,7 @@ export default function Home() {
               <form onSubmit={handleFormSubmit}>
                 <div>
                   {formConfigs[currentType].fields.map((field) => {
-                    let fieldValue = editingItem ? editingItem[field.name] : '';
-
-                    // Convert photos array to newline-separated string for editing
-                    if (field.name === 'photos' && editingItem && Array.isArray(editingItem.photos)) {
-                      fieldValue = editingItem.photos.join('\n');
-                    }
-
+                    const fieldValue = editingItem ? editingItem[field.name] : '';
                     const selectValue = field.name === 'visited' && editingItem ?
                       (editingItem.visited ? 'Yes' : 'No') : fieldValue;
 
@@ -713,6 +743,40 @@ export default function Home() {
                     );
                   })}
                 </div>
+                {currentType === 'memory' && (
+                  <div className="form-group">
+                    <label htmlFor="photo-upload">Photos</label>
+                    <input
+                      type="file"
+                      id="photo-upload"
+                      accept="image/*"
+                      multiple
+                      onChange={handlePhotoUpload}
+                      style={{ marginBottom: '0.5rem' }}
+                    />
+                    {(uploadedPhotos.length > 0 || (editingItem?.photos && editingItem.photos.length > 0)) && (
+                      <div className="photo-preview-grid">
+                        {editingItem?.photos && editingItem.photos.map((photo: string, idx: number) => (
+                          <div key={`existing-${idx}`} className="photo-preview-item">
+                            <img src={photo} alt={`Existing ${idx + 1}`} />
+                          </div>
+                        ))}
+                        {uploadedPhotos.map((photo, idx) => (
+                          <div key={`new-${idx}`} className="photo-preview-item">
+                            <img src={photo} alt={`New ${idx + 1}`} />
+                            <button
+                              type="button"
+                              className="photo-remove-btn"
+                              onClick={() => setUploadedPhotos(prev => prev.filter((_, i) => i !== idx))}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
                 <div className="form-actions">
                   <button type="submit" className="submit-btn">Save</button>
                   <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>

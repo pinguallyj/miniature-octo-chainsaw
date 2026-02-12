@@ -33,7 +33,7 @@
 }
 
 body {
-    font-family: 'Comic Sans MS', 'VT323', cursive, sans-serif;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     background: #f0e5ff;
     background-image:
         repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(196, 161, 255, 0.1) 2px, rgba(196, 161, 255, 0.1) 4px),
@@ -263,7 +263,7 @@ body::before {
 }
 
 .nav-button-label {
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--text-retro);
@@ -309,7 +309,7 @@ body::before {
 .landing-date-title {
     font-weight: bold;
     color: var(--text-retro);
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .landing-date-date {
@@ -347,6 +347,53 @@ body::before {
     height: 100%;
     object-fit: cover;
     image-rendering: auto;
+}
+
+/* Photo Preview in Form */
+.photo-preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.photo-preview-item {
+    aspect-ratio: 1;
+    border: 2px solid;
+    border-color: var(--border-3d-light);
+    overflow: hidden;
+    background: var(--win98-gray);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.photo-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-remove-btn {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #ff6b6b;
+    border: 1px solid;
+    border-color: var(--border-3d-light);
+    color: white;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    padding: 0;
+}
+
+.photo-remove-btn:hover {
+    background: #ff5252;
 }
 
 /* Header */
@@ -393,7 +440,7 @@ body::before {
     font-size: 0.9rem;
     font-weight: bold;
     transition: all 0.1s;
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .nav-btn:hover {
@@ -416,17 +463,20 @@ body::before {
     border: 2px solid;
     border-color: var(--border-3d-light);
     color: var(--text-primary);
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 0.8rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: bold;
     transition: all 0.1s;
-    margin-bottom: 1rem;
-    font-family: 'Comic Sans MS', cursive;
+    margin-bottom: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 .back-btn:hover {
     background: #d4d4d4;
+    transform: translateX(-3px);
 }
 
 .back-btn:active {
@@ -490,7 +540,7 @@ body::before {
     font-weight: bold;
     transition: all 0.1s;
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
 }
 
@@ -558,7 +608,7 @@ body::before {
 }
 
 .card h3 {
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--text-retro);
@@ -673,7 +723,7 @@ body::before {
 }
 
 .list-item-content h3 {
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
@@ -767,7 +817,7 @@ body::before {
     font-weight: bold;
     font-size: 0.9rem;
     color: var(--text-primary);
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .form-group input,
@@ -778,7 +828,7 @@ body::before {
     border: 2px solid;
     border-color: var(--border-3d-dark);
     font-size: 0.95rem;
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     background: white;
 }
 
@@ -814,7 +864,7 @@ body::before {
     font-weight: bold;
     transition: all 0.1s;
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .submit-btn:hover {
@@ -841,7 +891,7 @@ body::before {
     font-weight: bold;
     transition: all 0.1s;
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-    font-family: 'Comic Sans MS', cursive;
+    font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
 .cancel-btn:hover {
@@ -1107,8 +1157,52 @@ body::before {
     }
 
     .back-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+        font-size: 1rem;
+    }
+
+    /* Mobile compact navigation */
+    .nav {
+        display: none;
+    }
+
+    .mobile-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0.5rem;
+        background: var(--win98-gray);
+        border: 2px solid;
+        border-color: var(--border-3d-light);
+        margin-bottom: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .mobile-nav-btn {
+        background: transparent;
+        border: none;
+        padding: 0.5rem;
+        cursor: pointer;
+        font-size: 1.5rem;
+        transition: all 0.1s;
+        opacity: 0.6;
+    }
+
+    .mobile-nav-btn.active {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+    .mobile-nav-btn:hover {
+        opacity: 1;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-nav {
+        display: none;
     }
 }
 
