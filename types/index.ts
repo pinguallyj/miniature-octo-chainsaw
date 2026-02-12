@@ -3,19 +3,52 @@ export interface BaseItem {
   createdAt: string;
 }
 
+// Memory Album with photos
+export interface MemoryAlbum extends BaseItem {
+  title: string;
+  photos: string[]; // Array of image URLs or base64 strings
+  date?: string;
+  description?: string;
+}
+
+// Date Plan for calendar
+export interface DatePlan extends BaseItem {
+  title: string;
+  date: string; // ISO date string
+  time?: string;
+  location?: string;
+  description?: string;
+  status: 'Planned' | 'Completed';
+}
+
+// Place with dual ratings and photos
+export interface Place extends BaseItem {
+  name: string;
+  type?: string; // restaurant, cafe, park, museum, etc.
+  location?: string;
+  photos?: string[];
+  instagramPage?: string;
+  visited: boolean;
+  ratingZ?: number; // 1-5
+  ratingS?: number; // 1-5
+  description?: string;
+}
+
+// Simplified Things to Do items
+export interface ThingToDo extends BaseItem {
+  name: string;
+  category: 'Book' | 'Movie' | 'TV Show' | 'Anime' | 'Game';
+  status: 'Want to' | 'In Progress' | 'Completed';
+  ratingZ?: number; // 1-5
+  ratingS?: number; // 1-5
+}
+
+// Legacy types for backward compatibility
 export interface Memory extends BaseItem {
   title: string;
   date: string;
   description: string;
   location?: string;
-}
-
-export interface DatePlan extends BaseItem {
-  title: string;
-  date: string;
-  location: string;
-  description?: string;
-  status: 'Planned' | 'Completed';
 }
 
 export interface Restaurant extends BaseItem {
@@ -60,16 +93,19 @@ export interface Game extends BaseItem {
 
 export interface AppData {
   memories: Memory[];
+  memoryAlbums?: MemoryAlbum[];
   dates: DatePlan[];
   restaurants: Restaurant[];
+  places?: Place[];
   dateIdeas: DateIdea[];
   books: Book[];
   watch: WatchItem[];
   games: Game[];
+  thingsToDo?: ThingToDo[];
 }
 
 export type SectionKey = keyof AppData;
-export type ItemType = 'memory' | 'date' | 'restaurant' | 'dateIdea' | 'book' | 'watch' | 'game';
+export type ItemType = 'memory' | 'memoryAlbum' | 'date' | 'restaurant' | 'place' | 'dateIdea' | 'book' | 'watch' | 'game' | 'thingToDo';
 
 export interface FormField {
   name: string;

@@ -19,5 +19,17 @@ export function formatDateTime(dateString: string): string {
 }
 
 export function getSectionKey(type: string): string {
-  return type === 'dateIdea' ? 'dateIdeas' : type + 's';
+  const mapping: Record<string, string> = {
+    'memory': 'memories',
+    'memoryAlbum': 'memoryAlbums',
+    'date': 'dates',
+    'restaurant': 'restaurants',
+    'place': 'places',
+    'dateIdea': 'dateIdeas',
+    'book': 'books',
+    'watch': 'watch',
+    'game': 'games',
+    'thingToDo': 'thingsToDo'
+  };
+  return mapping[type] || type + 's';
 }

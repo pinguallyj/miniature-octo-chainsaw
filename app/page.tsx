@@ -9,12 +9,15 @@ import { AppData, ItemType, Memory, DatePlan, Restaurant, DateIdea, Book, WatchI
 
 const initialData: AppData = {
   memories: [],
+  memoryAlbums: [],
   dates: [],
   restaurants: [],
+  places: [],
   dateIdeas: [],
   books: [],
   watch: [],
-  games: []
+  games: [],
+  thingsToDo: []
 };
 
 export default function Home() {
@@ -23,6 +26,8 @@ export default function Home() {
   const [currentSection, setCurrentSection] = useState<string>('memories');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentType, setCurrentType] = useState<ItemType | null>(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   const navigateToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
@@ -37,6 +42,7 @@ export default function Home() {
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentType(null);
+    setSelectedDate(null);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,13 +56,20 @@ export default function Home() {
     };
 
     for (let [key, value] of formData.entries()) {
-      item[key] = value;
+      if (key === 'visited') {
+        item[key] = value === 'Yes';
+      } else if (key === 'ratingZ' || key === 'ratingS' || key === 'rating') {
+        item[key] = value ? Number(value) : undefined;
+      } else {
+        item[key] = value;
+      }
     }
 
     const sectionKey = getSectionKey(currentType) as keyof AppData;
+    const currentArray = data[sectionKey] || [];
     setData({
       ...data,
-      [sectionKey]: [...data[sectionKey], item]
+      [sectionKey]: [...currentArray, item]
     });
 
     closeModal();
@@ -65,9 +78,10 @@ export default function Home() {
 
   const deleteItem = (type: ItemType, id: number) => {
     const sectionKey = getSectionKey(type) as keyof AppData;
+    const currentArray = data[sectionKey] || [];
     setData({
       ...data,
-      [sectionKey]: data[sectionKey].filter((item: any) => item.id !== id)
+      [sectionKey]: currentArray.filter((item: any) => item.id !== id)
     });
   };
 
@@ -110,6 +124,36 @@ export default function Home() {
         );
         break;
 
+      case 'place':
+        const place = item as any;
+        const placeAvgRating = place.ratingZ && place.ratingS ?
+          ((Number(place.ratingZ) + Number(place.ratingS)) / 2).toFixed(1) : null;
+        content = (
+          <>
+            <div className="card-header">
+              <div>
+                <h3>{place.name}</h3>
+                <p className="card-date">{place.type || 'Place'}</p>
+              </div>
+              <button className="delete-btn" onClick={() => deleteItem(type, place.id)}>×</button>
+            </div>
+            {place.location && <p>📍 {place.location}</p>}
+            {place.instagramPage && <p>📸 <a href={`https://instagram.com/${place.instagramPage.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{color: 'var(--retro-purple)', textDecoration: 'underline'}}>{place.instagramPage}</a></p>}
+            <span className={`card-status ${place.visited ? 'completed' : 'pending'}`}>
+              {place.visited ? 'Visited ✓' : 'Not Visited'}
+            </span>
+            {place.visited && (place.ratingZ || place.ratingS) && (
+              <div style={{ marginTop: '0.8rem', fontSize: '0.9rem' }}>
+                {place.ratingZ && <p>⭐ Z: {place.ratingZ}/5</p>}
+                {place.ratingS && <p>⭐ S: {place.ratingS}/5</p>}
+                {placeAvgRating && <p><strong>📊 Avg: {placeAvgRating}/5</strong></p>}
+              </div>
+            )}
+            {place.description && <p style={{ marginTop: '0.8rem' }}>{place.description}</p>}
+          </>
+        );
+        break;
+
       case 'dateIdea':
         const dateIdea = item as DateIdea;
         content = (
@@ -128,62 +172,30 @@ export default function Home() {
         break;
 
       case 'book':
-        const book = item as Book;
-        content = (
-          <>
-            <div className="card-header">
-              <div>
-                <h3>{book.title}</h3>
-                <p className="card-date">by {book.author}</p>
-              </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, book.id)}>×</button>
-            </div>
-            {book.genre && <p>📚 {book.genre}</p>}
-            <span className={`card-status ${book.status === 'Completed' ? 'completed' : 'pending'}`}>
-              {book.status}
-            </span>
-            {book.notes && <p style={{ marginTop: '0.8rem' }}>{book.notes}</p>}
-          </>
-        );
-        break;
-
       case 'watch':
-        const watch = item as WatchItem;
-        content = (
-          <>
-            <div className="card-header">
-              <div>
-                <h3>{watch.title}</h3>
-                <p className="card-date">{watch.type}</p>
-              </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, watch.id)}>×</button>
-            </div>
-            {watch.genre && <p>🎬 {watch.genre}</p>}
-            {watch.platform && <p>📺 {watch.platform}</p>}
-            <span className={`card-status ${watch.status === 'Completed' ? 'completed' : 'pending'}`}>
-              {watch.status}
-            </span>
-            {watch.notes && <p style={{ marginTop: '0.8rem' }}>{watch.notes}</p>}
-          </>
-        );
-        break;
-
       case 'game':
-        const game = item as Game;
+        const thingItem = item as any;
+        const avgRating = thingItem.ratingZ && thingItem.ratingS ?
+          ((Number(thingItem.ratingZ) + Number(thingItem.ratingS)) / 2).toFixed(1) : null;
         content = (
           <>
             <div className="card-header">
               <div>
-                <h3>{game.title}</h3>
-                <p className="card-date">{game.type}</p>
+                <h3>{thingItem.name || thingItem.title}</h3>
+                <p className="card-date">{thingItem.category || thingItem.type}</p>
               </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, game.id)}>×</button>
+              <button className="delete-btn" onClick={() => deleteItem(type, thingItem.id)}>×</button>
             </div>
-            {game.players && <p>👥 {game.players}</p>}
-            <span className={`card-status ${game.status === 'Completed' ? 'completed' : 'pending'}`}>
-              {game.status}
+            <span className={`card-status ${thingItem.status === 'Completed' || thingItem.status.includes('Completed') ? 'completed' : 'pending'}`}>
+              {thingItem.status}
             </span>
-            {game.notes && <p style={{ marginTop: '0.8rem' }}>{game.notes}</p>}
+            {(thingItem.ratingZ || thingItem.ratingS) && (
+              <div style={{ marginTop: '0.8rem', fontSize: '0.9rem' }}>
+                {thingItem.ratingZ && <p>⭐ Z: {thingItem.ratingZ}/5</p>}
+                {thingItem.ratingS && <p>⭐ S: {thingItem.ratingS}/5</p>}
+                {avgRating && <p><strong>📊 Avg: {avgRating}/5</strong></p>}
+              </div>
+            )}
           </>
         );
         break;
@@ -207,6 +219,99 @@ export default function Home() {
           </span>
         </div>
         <button className="delete-btn" onClick={() => deleteItem('date', item.id)}>×</button>
+      </div>
+    );
+  };
+
+  const renderCalendar = () => {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
+
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    const prevMonth = () => {
+      setCurrentMonth(new Date(year, month - 1, 1));
+    };
+
+    const nextMonth = () => {
+      setCurrentMonth(new Date(year, month + 1, 1));
+    };
+
+    const getDatesWithEvents = () => {
+      const dates = new Set<string>();
+      (data.dates || []).forEach((date: DatePlan) => {
+        const dateStr = date.date.split('T')[0];
+        dates.add(dateStr);
+      });
+      return dates;
+    };
+
+    const datesWithEvents = getDatesWithEvents();
+    const today = new Date().toISOString().split('T')[0];
+
+    const handleDayClick = (day: number) => {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      setSelectedDate(dateStr);
+      openModal('date');
+    };
+
+    const days = [];
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      const prevMonthDay = new Date(year, month, -i).getDate();
+      days.push(
+        <div key={`prev-${i}`} className="calendar-day other-month">
+          {prevMonthDay}
+        </div>
+      );
+    }
+    days.reverse();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const hasEvent = datesWithEvents.has(dateStr);
+      const isToday = dateStr === today;
+
+      days.push(
+        <motion.div
+          key={day}
+          className={`calendar-day ${hasEvent ? 'has-event' : ''} ${isToday ? 'today' : ''}`}
+          onClick={() => handleDayClick(day)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {day}
+        </motion.div>
+      );
+    }
+
+    const remainingDays = 42 - days.length;
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push(
+        <div key={`next-${i}`} className="calendar-day other-month">
+          {i}
+        </div>
+      );
+    }
+
+    return (
+      <div className="calendar">
+        <div className="calendar-header">
+          <button className="calendar-nav-btn" onClick={prevMonth}>◀</button>
+          <h3>{monthNames[month]} {year}</h3>
+          <button className="calendar-nav-btn" onClick={nextMonth}>▶</button>
+        </div>
+        <div className="calendar-grid">
+          {dayNames.map(day => (
+            <div key={day} className="calendar-day-header">{day}</div>
+          ))}
+          {days}
+        </div>
       </div>
     );
   };
@@ -242,22 +347,33 @@ export default function Home() {
       return renderThingsToDoSection();
     }
 
-    const sectionKey = getSectionKey(type) as keyof AppData;
-    const items = data[sectionKey];
+    if (sectionId === 'dates') {
+      const items = data.dates || [];
+      return (
+        <>
+          {renderCalendar()}
+          {items.length > 0 && (
+            <div style={{ marginTop: '2rem' }}>
+              <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '1rem', marginBottom: '1rem', color: 'var(--text-retro)' }}>
+                Upcoming Events
+              </h3>
+              <div className="list">
+                {items.map((item: any) => renderDateItem(item))}
+              </div>
+            </div>
+          )}
+        </>
+      );
+    }
 
-    if (!items || items.length === 0) {
+    const sectionKey = getSectionKey(type) as keyof AppData;
+    const items = data[sectionKey] || [];
+
+    if (items.length === 0) {
       return (
         <div className="empty-state">
           <div className="empty-state-icon">♡</div>
           <p>No items yet. Click the button above to add your first one!</p>
-        </div>
-      );
-    }
-
-    if (type === 'date') {
-      return (
-        <div className="list">
-          {items.map((item: any) => renderDateItem(item))}
         </div>
       );
     }
@@ -281,9 +397,9 @@ export default function Home() {
 
   const sections = [
     { id: 'memories', label: 'Memories', type: 'memory' as ItemType, title: 'Our Memories', button: '+ Add Memory', icon: '📸', description: 'Gallery of moments' },
-    { id: 'dates', label: 'Date Plans', type: 'date' as ItemType, title: 'Upcoming Dates', button: '+ Plan Date', icon: '📅', description: 'Plan together' },
-    { id: 'restaurants', label: 'Places', type: 'restaurant' as ItemType, title: 'Places to Eat', button: '+ Add Restaurant', icon: '📍', description: 'Discover spots' },
-    { id: 'things', label: 'Things to Do', type: 'book' as ItemType, title: 'Things to Do', button: '+ Add Item', icon: '✨', description: 'Books, games & more' }
+    { id: 'dates', label: 'Date Plans', type: 'date' as ItemType, title: 'Date Calendar', button: '+ Plan Date', icon: '📅', description: 'Plan together' },
+    { id: 'places', label: 'Places', type: 'place' as ItemType, title: 'Places to Visit', button: '+ Add Place', icon: '📍', description: 'Discover spots' },
+    { id: 'things', label: 'Things to Do', type: 'thingToDo' as ItemType, title: 'Things to Do', button: '+ Add Item', icon: '✨', description: 'Books, games & more' }
   ];
 
   const activeSection = sections.find(s => s.id === currentSection);
@@ -451,8 +567,10 @@ export default function Home() {
               exit={{ scale: 0.9, y: 50 }}
               transition={{ duration: 0.3 }}
             >
-              <span className="close" onClick={closeModal}>&times;</span>
-              <h3 className="modal-title">{formConfigs[currentType].title}</h3>
+              <div className="modal-title-bar">
+                <span>{formConfigs[currentType].title}</span>
+                <span className="close" onClick={closeModal}>×</span>
+              </div>
               <form onSubmit={handleFormSubmit}>
                 <div>
                   {formConfigs[currentType].fields.map((field) => (
@@ -485,6 +603,7 @@ export default function Home() {
                           required={field.required}
                           min={field.min}
                           max={field.max}
+                          defaultValue={field.name === 'date' && selectedDate ? selectedDate : ''}
                         />
                       )}
                     </div>
