@@ -41,6 +41,9 @@ export default function Home() {
   const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
 
+  // State for upcoming dates popup
+  const [showUpcomingDates, setShowUpcomingDates] = useState(false);
+
   const navigateToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
     setCurrentView('content');
@@ -788,6 +791,51 @@ export default function Home() {
                 </motion.section>
               )}
             </main>
+
+            {/* Upcoming Dates Popup Bubble */}
+            {currentView === 'content' && data.dates && data.dates.filter((d: DatePlan) => d.status === 'Planned').length > 0 && (
+              <motion.div
+                className={`upcoming-dates-popup ${showUpcomingDates ? 'expanded' : 'collapsed'}`}
+                initial={{ x: 100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              >
+                <div className="popup-header" onClick={() => setShowUpcomingDates(!showUpcomingDates)}>
+                  <span className="popup-icon">📅</span>
+                  <span className="popup-title">Upcoming</span>
+                  <span className="popup-toggle">{showUpcomingDates ? '▼' : '▲'}</span>
+                </div>
+                <AnimatePresence>
+                  {showUpcomingDates && (
+                    <motion.div
+                      className="popup-content"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {data.dates
+                        .filter((d: DatePlan) => d.status === 'Planned')
+                        .sort((a: DatePlan, b: DatePlan) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                        .slice(0, 3)
+                        .map((date: DatePlan) => (
+                          <div
+                            key={date.id}
+                            className="popup-date-item"
+                            onClick={() => navigateToSection('dates')}
+                          >
+                            <div className="popup-date-title">{date.title}</div>
+                            <div className="popup-date-date">
+                              {formatDate(date.date)}
+                              {date.time && <span> • {date.time}</span>}
+                            </div>
+                          </div>
+                        ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
