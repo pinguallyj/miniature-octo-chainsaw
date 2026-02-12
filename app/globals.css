@@ -24,6 +24,7 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
@@ -154,6 +155,17 @@ body {
 .add-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(244, 166, 184, 0.4);
+}
+
+.multi-add-btns {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.multi-add-btns .add-btn {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
 }
 
 /* Grid Layout */
@@ -458,6 +470,257 @@ body {
     font-style: italic;
 }
 
+/* Landing Page Styles */
+.landing-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Background Animation */
+.background-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-heart {
+    position: absolute;
+    font-size: 2rem;
+    color: var(--primary);
+    opacity: 0.15;
+    animation: float 15s infinite ease-in-out;
+}
+
+.floating-heart:nth-child(1) {
+    left: 10%;
+    top: 20%;
+    animation-delay: 0s;
+    animation-duration: 12s;
+}
+
+.floating-heart:nth-child(2) {
+    left: 80%;
+    top: 30%;
+    animation-delay: -3s;
+    animation-duration: 15s;
+}
+
+.floating-heart:nth-child(3) {
+    left: 20%;
+    top: 70%;
+    animation-delay: -6s;
+    animation-duration: 18s;
+}
+
+.floating-heart:nth-child(4) {
+    left: 70%;
+    top: 80%;
+    animation-delay: -9s;
+    animation-duration: 14s;
+}
+
+.floating-heart:nth-child(5) {
+    left: 50%;
+    top: 10%;
+    animation-delay: -12s;
+    animation-duration: 16s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(-5deg);
+    }
+    75% {
+        transform: translateY(-30px) rotate(3deg);
+    }
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 2rem;
+    width: 100%;
+    max-width: 1400px;
+}
+
+.hero-letters {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 4rem;
+    flex-wrap: wrap;
+}
+
+.letters-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.letter {
+    font-size: clamp(6rem, 15vw, 12rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 20px rgba(244, 166, 184, 0.3);
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.letter-divider {
+    font-size: clamp(4rem, 10vw, 8rem);
+    color: var(--text-secondary);
+    font-weight: 300;
+    opacity: 0.5;
+}
+
+/* GIF Placeholders */
+.gif-placeholder {
+    width: clamp(120px, 15vw, 180px);
+    height: clamp(120px, 15vw, 180px);
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(244, 166, 184, 0.1) 0%, rgba(158, 197, 171, 0.1) 100%);
+    border: 2px dashed var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.gif-placeholder:hover {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(244, 166, 184, 0.15) 0%, rgba(158, 197, 171, 0.15) 100%);
+    transform: scale(1.05);
+}
+
+.gif-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0.6;
+}
+
+.gif-placeholder::before {
+    content: '🎭';
+    position: absolute;
+    font-size: 3rem;
+    opacity: 0.2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.nav-button {
+    background: var(--bg-primary);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    box-shadow: 0 4px 15px var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav-button:hover {
+    border-color: var(--primary);
+    box-shadow: 0 8px 30px rgba(244, 166, 184, 0.3);
+    transform: translateY(-5px);
+}
+
+.nav-button:hover::before {
+    opacity: 0.05;
+}
+
+.nav-button-icon {
+    font-size: 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.nav-button-label {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+}
+
+.nav-button-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+    position: relative;
+    z-index: 1;
+}
+
+/* Back Button */
+.back-btn {
+    background: transparent;
+    border: 2px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.back-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    transform: translateX(-5px);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
@@ -502,6 +765,42 @@ body {
 
     .modal-content {
         padding: 2rem 1.5rem;
+    }
+
+    /* Landing Page Mobile */
+    .hero-letters {
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .gif-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+
+    .gif-placeholder::before {
+        font-size: 2rem;
+    }
+
+    .letter {
+        font-size: 5rem;
+    }
+
+    .letter-divider {
+        font-size: 3rem;
+    }
+
+    .nav-buttons {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .nav-button {
+        padding: 1.5rem 1rem;
+    }
+
+    .floating-heart {
+        font-size: 1.5rem;
     }
 }
 

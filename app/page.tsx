@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLocalStorage } from '@/lib/useLocalStorage';
 import { formConfigs } from '@/lib/formConfigs';
 import { formatDate, formatDateTime, getSectionKey } from '@/lib/utils';
@@ -18,9 +19,15 @@ const initialData: AppData = {
 
 export default function Home() {
   const [data, setData, isLoaded] = useLocalStorage<AppData>('coupleAppData', initialData);
+  const [currentView, setCurrentView] = useState<'landing' | 'content'>('landing');
   const [currentSection, setCurrentSection] = useState<string>('memories');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentType, setCurrentType] = useState<ItemType | null>(null);
+
+  const navigateToSection = (sectionId: string) => {
+    setCurrentSection(sectionId);
+    setCurrentView('content');
+  };
 
   const openModal = (type: ItemType) => {
     setCurrentType(type);
@@ -204,7 +211,37 @@ export default function Home() {
     );
   };
 
-  const renderSection = (type: ItemType) => {
+  const renderThingsToDoSection = () => {
+    const books = data.books || [];
+    const watch = data.watch || [];
+    const games = data.games || [];
+    const allItems = [
+      ...books.map((item: any) => ({ ...item, itemType: 'book' as ItemType })),
+      ...watch.map((item: any) => ({ ...item, itemType: 'watch' as ItemType })),
+      ...games.map((item: any) => ({ ...item, itemType: 'game' as ItemType }))
+    ];
+
+    if (allItems.length === 0) {
+      return (
+        <div className="empty-state">
+          <div className="empty-state-icon">♡</div>
+          <p>No items yet. Add books, games, shows, or movies!</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="grid">
+        {allItems.map((item: any) => renderCard(item, item.itemType))}
+      </div>
+    );
+  };
+
+  const renderSection = (type: ItemType, sectionId?: string) => {
+    if (sectionId === 'things') {
+      return renderThingsToDoSection();
+    }
+
     const sectionKey = getSectionKey(type) as keyof AppData;
     const items = data[sectionKey];
 
@@ -243,104 +280,225 @@ export default function Home() {
   }
 
   const sections = [
-    { id: 'memories', label: 'Memories', type: 'memory' as ItemType, title: 'Our Memories', button: '+ Add Memory' },
-    { id: 'dates', label: 'Date Plans', type: 'date' as ItemType, title: 'Upcoming Dates', button: '+ Plan Date' },
-    { id: 'restaurants', label: 'Restaurants', type: 'restaurant' as ItemType, title: 'Places to Eat', button: '+ Add Restaurant' },
-    { id: 'date-ideas', label: 'Date Ideas', type: 'dateIdea' as ItemType, title: 'Date Ideas', button: '+ Add Idea' },
-    { id: 'books', label: 'Books', type: 'book' as ItemType, title: 'Books to Read', button: '+ Add Book' },
-    { id: 'watch', label: 'Watch Together', type: 'watch' as ItemType, title: 'Watch Together', button: '+ Add Show/Movie' },
-    { id: 'games', label: 'Games', type: 'game' as ItemType, title: 'Games to Play', button: '+ Add Game' }
+    { id: 'memories', label: 'Memories', type: 'memory' as ItemType, title: 'Our Memories', button: '+ Add Memory', icon: '📸', description: 'Gallery of moments' },
+    { id: 'dates', label: 'Date Plans', type: 'date' as ItemType, title: 'Upcoming Dates', button: '+ Plan Date', icon: '📅', description: 'Plan together' },
+    { id: 'restaurants', label: 'Places', type: 'restaurant' as ItemType, title: 'Places to Eat', button: '+ Add Restaurant', icon: '📍', description: 'Discover spots' },
+    { id: 'things', label: 'Things to Do', type: 'book' as ItemType, title: 'Things to Do', button: '+ Add Item', icon: '✨', description: 'Books, games & more' }
   ];
 
   const activeSection = sections.find(s => s.id === currentSection);
 
   return (
-    <div className="container">
-      <header className="header">
-        <h1 className="title">Our Space</h1>
-        <p className="subtitle">Where our moments live together</p>
-      </header>
-
-      <nav className="nav">
-        {sections.map(section => (
-          <button
-            key={section.id}
-            className={`nav-btn ${currentSection === section.id ? 'active' : ''}`}
-            onClick={() => setCurrentSection(section.id)}
+    <>
+      <AnimatePresence mode="wait">
+        {currentView === 'landing' ? (
+          <motion.div
+            key="landing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.5 }}
+            className="landing-container"
           >
-            {section.label}
-          </button>
-        ))}
-      </nav>
-
-      <main className="main-content">
-        {activeSection && (
-          <section className="section active">
-            <div className="section-header">
-              <h2>{activeSection.title}</h2>
-              <button className="add-btn" onClick={() => openModal(activeSection.type)}>
-                {activeSection.button}
-              </button>
+            <div className="background-animation">
+              <div className="floating-heart">♡</div>
+              <div className="floating-heart">♡</div>
+              <div className="floating-heart">♡</div>
+              <div className="floating-heart">♡</div>
+              <div className="floating-heart">♡</div>
             </div>
-            {renderSection(activeSection.type)}
-          </section>
-        )}
-      </main>
 
-      {isModalOpen && currentType && (
-        <div className="modal active" onClick={(e) => {
-          if ((e.target as HTMLElement).classList.contains('modal')) {
-            closeModal();
-          }
-        }}>
-          <div className="modal-content">
-            <span className="close" onClick={closeModal}>&times;</span>
-            <h3 className="modal-title">{formConfigs[currentType].title}</h3>
-            <form onSubmit={handleFormSubmit}>
-              <div>
-                {formConfigs[currentType].fields.map((field) => (
-                  <div key={field.name} className="form-group">
-                    <label htmlFor={field.name}>
-                      {field.label}{field.required ? ' *' : ''}
-                    </label>
-                    {field.type === 'textarea' ? (
-                      <textarea
-                        id={field.name}
-                        name={field.name}
-                        required={field.required}
-                      />
-                    ) : field.type === 'select' ? (
-                      <select
-                        id={field.name}
-                        name={field.name}
-                        required={field.required}
-                      >
-                        <option value="">Select {field.label}</option>
-                        {field.options?.map(opt => (
-                          <option key={opt} value={opt}>{opt}</option>
-                        ))}
-                      </select>
+            <motion.div
+              className="hero-section"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              <div className="hero-letters">
+                <div className="gif-placeholder left">
+                  <span className="gif-text">Add GIF</span>
+                </div>
+                <div className="letters-container">
+                  <motion.span
+                    className="letter letter-z"
+                    initial={{ rotateY: -90, opacity: 0 }}
+                    animate={{ rotateY: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                  >
+                    Z
+                  </motion.span>
+                  <span className="letter-divider">/</span>
+                  <motion.span
+                    className="letter letter-s"
+                    initial={{ rotateY: 90, opacity: 0 }}
+                    animate={{ rotateY: 0, opacity: 1 }}
+                    transition={{ delay: 0.7, duration: 0.8 }}
+                  >
+                    S
+                  </motion.span>
+                </div>
+                <div className="gif-placeholder right">
+                  <span className="gif-text">Add GIF</span>
+                </div>
+              </div>
+
+              <motion.div
+                className="nav-buttons"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1, duration: 0.6 }}
+              >
+                {sections.map((section, index) => (
+                  <motion.button
+                    key={section.id}
+                    className="nav-button"
+                    onClick={() => navigateToSection(section.id)}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 1.2 + index * 0.1, duration: 0.4 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="nav-button-icon">{section.icon}</span>
+                    <span className="nav-button-label">{section.label}</span>
+                    <span className="nav-button-desc">{section.description}</span>
+                  </motion.button>
+                ))}
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -100 }}
+            transition={{ duration: 0.5 }}
+            className="container"
+          >
+            <header className="header">
+              <motion.button
+                className="back-btn"
+                onClick={() => setCurrentView('landing')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                ← Back to Home
+              </motion.button>
+              <h1 className="title">{activeSection?.title}</h1>
+            </header>
+
+            <nav className="nav">
+              {sections.map(section => (
+                <button
+                  key={section.id}
+                  className={`nav-btn ${currentSection === section.id ? 'active' : ''}`}
+                  onClick={() => setCurrentSection(section.id)}
+                >
+                  {section.icon} {section.label}
+                </button>
+              ))}
+            </nav>
+
+            <main className="main-content">
+              {activeSection && (
+                <motion.section
+                  className="section active"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <div className="section-header">
+                    <h2>{activeSection.title}</h2>
+                    {currentSection === 'things' ? (
+                      <div className="multi-add-btns">
+                        <button className="add-btn" onClick={() => openModal('book')}>+ Add Book</button>
+                        <button className="add-btn" onClick={() => openModal('watch')}>+ Add Show/Movie</button>
+                        <button className="add-btn" onClick={() => openModal('game')}>+ Add Game</button>
+                      </div>
                     ) : (
-                      <input
-                        type={field.type}
-                        id={field.name}
-                        name={field.name}
-                        required={field.required}
-                        min={field.min}
-                        max={field.max}
-                      />
+                      <button className="add-btn" onClick={() => openModal(activeSection.type)}>
+                        {activeSection.button}
+                      </button>
                     )}
                   </div>
-                ))}
-              </div>
-              <div className="form-actions">
-                <button type="submit" className="submit-btn">Save</button>
-                <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-    </div>
+                  {renderSection(activeSection.type, currentSection)}
+                </motion.section>
+              )}
+            </main>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isModalOpen && currentType && (
+          <motion.div
+            className="modal active"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={(e) => {
+              if ((e.target as HTMLElement).classList.contains('modal')) {
+                closeModal();
+              }
+            }}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ scale: 0.9, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <span className="close" onClick={closeModal}>&times;</span>
+              <h3 className="modal-title">{formConfigs[currentType].title}</h3>
+              <form onSubmit={handleFormSubmit}>
+                <div>
+                  {formConfigs[currentType].fields.map((field) => (
+                    <div key={field.name} className="form-group">
+                      <label htmlFor={field.name}>
+                        {field.label}{field.required ? ' *' : ''}
+                      </label>
+                      {field.type === 'textarea' ? (
+                        <textarea
+                          id={field.name}
+                          name={field.name}
+                          required={field.required}
+                        />
+                      ) : field.type === 'select' ? (
+                        <select
+                          id={field.name}
+                          name={field.name}
+                          required={field.required}
+                        >
+                          <option value="">Select {field.label}</option>
+                          {field.options?.map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type={field.type}
+                          id={field.name}
+                          name={field.name}
+                          required={field.required}
+                          min={field.min}
+                          max={field.max}
+                        />
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="submit-btn">Save</button>
+                  <button type="button" className="cancel-btn" onClick={closeModal}>Cancel</button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
