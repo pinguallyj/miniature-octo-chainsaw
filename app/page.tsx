@@ -638,12 +638,54 @@ export default function Home() {
                   </div>
               </div>
 
+              {/* Latest Memory Widget */}
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.9, duration: 0.6 }}
+                style={{ maxWidth: '800px', margin: '0 auto 2rem' }}
+              >
+                <LatestMemory
+                  memory={data.memories && data.memories.length > 0
+                    ? data.memories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
+                    : null
+                  }
+                  onViewMemories={() => navigateToSection('memories')}
+                />
+              </motion.div>
+
+              <motion.div
+                className="nav-buttons"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1.0, duration: 0.6 }}
+              >
+                {sections.map((section, index) => (
+                  <motion.button
+                    key={section.id}
+                    className="nav-button"
+                    onClick={() => navigateToSection(section.id)}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 1.1 + index * 0.1, duration: 0.4 }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <span className="nav-button-icon">{section.icon}</span>
+                    <span className="nav-button-label">{section.label}</span>
+                    <span className="nav-button-desc">{section.description}</span>
+                  </motion.button>
+                ))}
+              </motion.div>
+
+              {/* Upcoming Dates Widget at the end */}
               {data.dates && data.dates.filter((d: DatePlan) => d.status === 'Planned').length > 0 && (
                 <motion.div
                   className="landing-dates"
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.9, duration: 0.6 }}
+                  transition={{ delay: 1.5, duration: 0.6 }}
+                  style={{ marginTop: '2rem' }}
                 >
                   <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '0.8rem', marginBottom: '0.8rem', color: 'var(--dark-green)', textAlign: 'center' }}>
                     📅 Upcoming Dates
@@ -669,46 +711,6 @@ export default function Home() {
                   </div>
                 </motion.div>
               )}
-
-              {/* Latest Memory Widget */}
-              <motion.div
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.1, duration: 0.6 }}
-                style={{ maxWidth: '800px', margin: '0 auto 2rem' }}
-              >
-                <LatestMemory
-                  memory={data.memories && data.memories.length > 0
-                    ? data.memories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
-                    : null
-                  }
-                  onViewMemories={() => navigateToSection('memories')}
-                />
-              </motion.div>
-
-              <motion.div
-                className="nav-buttons"
-                initial={{ y: 30, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1.2, duration: 0.6 }}
-              >
-                {sections.map((section, index) => (
-                  <motion.button
-                    key={section.id}
-                    className="nav-button"
-                    onClick={() => navigateToSection(section.id)}
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 1.3 + index * 0.1, duration: 0.4 }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <span className="nav-button-icon">{section.icon}</span>
-                    <span className="nav-button-label">{section.label}</span>
-                    <span className="nav-button-desc">{section.description}</span>
-                  </motion.button>
-                ))}
-              </motion.div>
             </motion.div>
           </motion.div>
         ) : (
