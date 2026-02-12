@@ -177,6 +177,18 @@ body::before {
     96% { transform: translate(2px, 2px); }
 }
 
+@keyframes softGlow {
+    0%, 100% {
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2),
+                    0 0 20px rgba(255, 201, 227, 0.8);
+    }
+    50% {
+        box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2),
+                    0 0 30px rgba(255, 201, 227, 1),
+                    0 0 40px rgba(255, 201, 227, 0.5);
+    }
+}
+
 .letter-divider {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(3rem, 8vw, 6rem);
@@ -244,9 +256,10 @@ body::before {
 }
 
 .nav-button:hover {
-    background: #d4d4d4;
+    background: var(--mint-green);
     transform: translate(-1px, -1px);
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2),
+                0 0 15px rgba(168, 230, 161, 0.6);
 }
 
 .nav-button:active {
@@ -493,7 +506,8 @@ body::before {
 }
 
 .nav-btn:hover {
-    background: #d4d4d4;
+    background: var(--mint-green);
+    box-shadow: 0 0 10px rgba(168, 230, 161, 0.5);
 }
 
 .nav-btn:active {
@@ -592,7 +606,9 @@ body::before {
 .add-btn:hover {
     background: #ffc7ed;
     transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(255, 201, 227, 0.8);
+    animation: softGlow 2s ease-in-out infinite;
 }
 
 .add-btn:active {
@@ -629,7 +645,8 @@ body::before {
 .icon-add-btn:hover {
     background: var(--cute-green);
     transform: translate(-1px, -1px);
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15),
+                0 0 15px rgba(168, 230, 161, 0.7);
 }
 
 .icon-add-btn:active {
@@ -940,7 +957,8 @@ body::before {
 .submit-btn:hover {
     background: #c9f2df;
     transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(184, 243, 208, 0.8);
 }
 
 .submit-btn:active {
@@ -965,9 +983,10 @@ body::before {
 }
 
 .cancel-btn:hover {
-    background: #d4d4d4;
+    background: var(--mint-green);
     transform: translate(-1px, -1px);
-    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2),
+                0 0 10px rgba(184, 243, 208, 0.5);
 }
 
 .cancel-btn:active {
@@ -1201,15 +1220,6 @@ body::before {
 
     .form-actions {
         flex-direction: column;
-    }
-
-    .multi-add-btns {
-        flex-direction: column;
-        width: 100%;
-    }
-
-    .multi-add-btns .add-btn {
-        width: 100%;
     }
 
     .main-content {

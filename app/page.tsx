@@ -121,6 +121,9 @@ export default function Home() {
   };
 
   const deleteItem = (type: ItemType, id: number) => {
+    if (!window.confirm('Are you sure you want to delete this item?')) {
+      return;
+    }
     const sectionKey = getSectionKey(type) as keyof AppData;
     const currentArray = data[sectionKey] || [];
     setData({
@@ -589,38 +592,6 @@ export default function Home() {
                   </motion.button>
                 ))}
               </motion.div>
-
-              {data.dates && data.dates.filter((d: DatePlan) => d.status === 'Planned').length > 0 && (
-                <motion.div
-                  className="landing-dates"
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 1.6, duration: 0.6 }}
-                >
-                  <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--text-retro)', textAlign: 'center' }}>
-                    📅 Upcoming Dates
-                  </h3>
-                  <div className="landing-dates-list">
-                    {data.dates
-                      .filter((d: DatePlan) => d.status === 'Planned')
-                      .sort((a: DatePlan, b: DatePlan) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                      .slice(0, 3)
-                      .map((date: DatePlan) => (
-                        <motion.div
-                          key={date.id}
-                          className="landing-date-item"
-                          whileHover={{ scale: 1.02 }}
-                          onClick={() => navigateToSection('dates')}
-                        >
-                          <span className="landing-date-title">{date.title}</span>
-                          <span className="landing-date-date">
-                            {formatDate(date.date)} {date.time && `• ${date.time}`}
-                          </span>
-                        </motion.div>
-                      ))}
-                  </div>
-                </motion.div>
-              )}
             </motion.div>
           </motion.div>
         ) : (
