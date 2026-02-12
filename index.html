@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Space ♡</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="title">Our Space</h1>
+            <p class="subtitle">Where our moments live together</p>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" data-section="memories">Memories</button>
+            <button class="nav-btn" data-section="dates">Date Plans</button>
+            <button class="nav-btn" data-section="restaurants">Restaurants</button>
+            <button class="nav-btn" data-section="date-ideas">Date Ideas</button>
+            <button class="nav-btn" data-section="books">Books</button>
+            <button class="nav-btn" data-section="watch">Watch Together</button>
+            <button class="nav-btn" data-section="games">Games</button>
+        </nav>
+
+        <!-- Sections -->
+        <main class="main-content">
+            <!-- Memories Section -->
+            <section id="memories" class="section active">
+                <div class="section-header">
+                    <h2>Our Memories</h2>
+                    <button class="add-btn" onclick="openModal('memory')">+ Add Memory</button>
+                </div>
+                <div id="memories-grid" class="grid"></div>
+            </section>
+
+            <!-- Date Plans Section -->
+            <section id="dates" class="section">
+                <div class="section-header">
+                    <h2>Upcoming Dates</h2>
+                    <button class="add-btn" onclick="openModal('date')">+ Plan Date</button>
+                </div>
+                <div id="dates-list" class="list"></div>
+            </section>
+
+            <!-- Restaurants Section -->
+            <section id="restaurants" class="section">
+                <div class="section-header">
+                    <h2>Places to Eat</h2>
+                    <button class="add-btn" onclick="openModal('restaurant')">+ Add Restaurant</button>
+                </div>
+                <div id="restaurants-grid" class="grid"></div>
+            </section>
+
+            <!-- Date Ideas Section -->
+            <section id="date-ideas" class="section">
+                <div class="section-header">
+                    <h2>Date Ideas</h2>
+                    <button class="add-btn" onclick="openModal('dateIdea')">+ Add Idea</button>
+                </div>
+                <div id="date-ideas-grid" class="grid"></div>
+            </section>
+
+            <!-- Books Section -->
+            <section id="books" class="section">
+                <div class="section-header">
+                    <h2>Books to Read</h2>
+                    <button class="add-btn" onclick="openModal('book')">+ Add Book</button>
+                </div>
+                <div id="books-grid" class="grid"></div>
+            </section>
+
+            <!-- Watch Together Section -->
+            <section id="watch" class="section">
+                <div class="section-header">
+                    <h2>Watch Together</h2>
+                    <button class="add-btn" onclick="openModal('watch')">+ Add Show/Movie</button>
+                </div>
+                <div id="watch-grid" class="grid"></div>
+            </section>
+
+            <!-- Games Section -->
+            <section id="games" class="section">
+                <div class="section-header">
+                    <h2>Games to Play</h2>
+                    <button class="add-btn" onclick="openModal('game')">+ Add Game</button>
+                </div>
+                <div id="games-grid" class="grid"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title">Add Item</h3>
+            <form id="item-form">
+                <div id="form-fields"></div>
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">Save</button>
+                    <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
