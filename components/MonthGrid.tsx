@@ -24,31 +24,35 @@ const MONTHS = [
 ];
 
 export default function MonthGrid({ onMonthClick, currentYear, memoryCounts }: MonthGridProps) {
+  const totalMemories = Object.entries(memoryCounts)
+    .filter(([key]) => key.startsWith(`${currentYear}-`))
+    .reduce((sum, [_, count]) => sum + count, 0);
+
   return (
-    <div className="w-full max-w-5xl mx-auto p-4">
+    <div className="month-grid-container">
       {/* Year Selector */}
-      <div className="flex items-center justify-center gap-4 mb-8">
+      <div className="year-selector">
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => onMonthClick(0, currentYear - 1)}
-          className="px-4 py-2 bg-white border-4 border-black font-bold hover:bg-gray-100 transition-colors"
+          className="year-btn"
         >
           ◀ {currentYear - 1}
         </motion.button>
-        <h2 className="text-3xl font-bold">{currentYear}</h2>
+        <h2 className="year-title">{currentYear}</h2>
         <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => onMonthClick(0, currentYear + 1)}
-          className="px-4 py-2 bg-white border-4 border-black font-bold hover:bg-gray-100 transition-colors"
+          className="year-btn"
         >
           {currentYear + 1} ▶
         </motion.button>
       </div>
 
       {/* Month Grid - 3 rows x 4 columns */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="month-grid">
         {MONTHS.map((month, index) => {
           const key = `${currentYear}-${month.num}`;
           const count = memoryCounts[key] || 0;
@@ -59,35 +63,31 @@ export default function MonthGrid({ onMonthClick, currentYear, memoryCounts }: M
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              whileHover={{ scale: 1.05, y: -5 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => onMonthClick(month.num, currentYear)}
-              className="relative h-32 sm:h-40 bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] transition-all"
+              className="month-button"
               style={{ backgroundColor: month.color }}
             >
-              <div className="flex flex-col items-center justify-center h-full p-4">
-                <div className="text-4xl sm:text-5xl font-bold mb-2">{month.short}</div>
-                <div className="text-xs sm:text-sm opacity-70">{month.full}</div>
-                {count > 0 && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 bg-black text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
-                  >
-                    {count}
-                  </motion.div>
-                )}
-              </div>
+              <div className="month-short">{month.short}</div>
+              <div className="month-full">{month.full}</div>
+              {count > 0 && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="month-count-badge"
+                >
+                  {count}
+                </motion.div>
+              )}
             </motion.button>
           );
         })}
       </div>
 
       {/* Stats */}
-      <div className="mt-8 text-center text-lg opacity-70">
-        Total memories in {currentYear}: {Object.entries(memoryCounts)
-          .filter(([key]) => key.startsWith(`${currentYear}-`))
-          .reduce((sum, [_, count]) => sum + count, 0)}
+      <div className="month-stats">
+        Total memories in {currentYear}: {totalMemories}
       </div>
     </div>
   );
