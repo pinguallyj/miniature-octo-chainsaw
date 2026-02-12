@@ -510,9 +510,9 @@ export default function Home() {
               transition={{ delay: 0.2, duration: 0.8 }}
             >
               <div className="hero-letters">
-                <div className="gif-placeholder left">
-                  <span className="gif-text">Add GIF</span>
-                </div>
+                  <div className="gif-placeholder left">
+                      <img src="/bulb.gif" alt="Character Z" />
+                  </div>
                 <div className="letters-container">
                   <motion.span
                     className="letter letter-z"
@@ -532,9 +532,9 @@ export default function Home() {
                     S
                   </motion.span>
                 </div>
-                <div className="gif-placeholder right">
-                  <span className="gif-text">Add GIF</span>
-                </div>
+                  <div className="gif-placeholder right">
+                      <img src="/milk.gif" alt="Character S" />
+                  </div>
               </div>
 
               {data.dates && data.dates.filter((d: DatePlan) => d.status === 'Planned').length > 0 && (
