@@ -6,6 +6,10 @@ import { useLocalStorage } from '@/lib/useLocalStorage';
 import { formConfigs } from '@/lib/formConfigs';
 import { formatDate, formatDateTime, getSectionKey } from '@/lib/utils';
 import { AppData, ItemType, Memory, DatePlan, Restaurant, DateIdea, Book, WatchItem, Game } from '@/types';
+import MonthGrid from '@/components/MonthGrid';
+import MonthView from '@/components/MonthView';
+import Timeline from '@/components/Timeline';
+import LatestMemory from '@/components/LatestMemory';
 
 const initialData: AppData = {
   memories: [],
@@ -32,9 +36,19 @@ export default function Home() {
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
   const [zoomedPhoto, setZoomedPhoto] = useState<string | null>(null);
 
+  // New state for memories reorganization
+  const [memoryView, setMemoryView] = useState<'grid' | 'month' | 'timeline'>('grid');
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+
   const navigateToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
     setCurrentView('content');
+    // Reset memory view when navigating to memories section
+    if (sectionId === 'memories') {
+      setMemoryView('grid');
+      setSelectedMonth(null);
+    }
   };
 
   const openModal = (type: ItemType, item?: any) => {
@@ -50,6 +64,7 @@ export default function Home() {
     setSelectedDate(null);
     setEditingItem(null);
     setUploadedPhotos([]);
+    // Don't reset selectedMonth/selectedYear here - keep them so we stay in the month view
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,6 +112,16 @@ export default function Home() {
     if (currentType === 'memory') {
       const existingPhotos = editingItem?.photos || [];
       item.photos = [...existingPhotos, ...uploadedPhotos];
+
+      // Set month/year based on selected month or current date
+      if (selectedMonth && selectedYear) {
+        item.month = selectedMonth;
+        item.year = selectedYear;
+      } else if (!item.month || !item.year) {
+        const now = new Date();
+        item.month = now.getMonth() + 1;
+        item.year = now.getFullYear();
+      }
     }
 
     const sectionKey = getSectionKey(currentType) as keyof AppData;
@@ -445,6 +470,82 @@ export default function Home() {
       );
     }
 
+    // Special handling for memories section with new monthly layout
+    if (sectionId === 'memories') {
+      const memories = data.memories || [];
+
+      // Timeline view
+      if (memoryView === 'timeline') {
+        return (
+          <Timeline
+            memories={memories}
+            onBack={() => setMemoryView('grid')}
+            onEditMemory={(memory) => openModal('memory', memory)}
+            onDeleteMemory={(id) => deleteItem('memory', id)}
+            onPhotoClick={(photo) => setZoomedPhoto(photo)}
+          />
+        );
+      }
+
+      // Month-specific view
+      if (memoryView === 'month' && selectedMonth && selectedYear) {
+        return (
+          <MonthView
+            month={selectedMonth}
+            year={selectedYear}
+            memories={memories}
+            onBack={() => {
+              setMemoryView('grid');
+              setSelectedMonth(null);
+            }}
+            onAddMemory={() => openModal('memory')}
+            onEditMemory={(memory) => openModal('memory', memory)}
+            onDeleteMemory={(id) => deleteItem('memory', id)}
+            onPhotoClick={(photo) => setZoomedPhoto(photo)}
+          />
+        );
+      }
+
+      // Month grid view (default)
+      const memoryCounts: { [key: string]: number } = {};
+      memories.forEach((memory: Memory) => {
+        if (memory.month && memory.year) {
+          const key = `${memory.year}-${memory.month}`;
+          memoryCounts[key] = (memoryCounts[key] || 0) + 1;
+        }
+      });
+
+      return (
+        <>
+          <div className="flex justify-between items-center mb-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setMemoryView('timeline')}
+              className="px-4 py-2 bg-purple-300 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] font-bold"
+            >
+              📜 Timeline View
+            </motion.button>
+          </div>
+          <MonthGrid
+            onMonthClick={(month, year) => {
+              if (month === 0) {
+                // Year change
+                setSelectedYear(year);
+              } else {
+                // Month click
+                setSelectedMonth(month);
+                setSelectedYear(year);
+                setMemoryView('month');
+              }
+            }}
+            currentYear={selectedYear}
+            memoryCounts={memoryCounts}
+          />
+        </>
+      );
+    }
+
     const sectionKey = getSectionKey(type) as keyof AppData;
     const items = data[sectionKey] || [];
 
@@ -569,11 +670,27 @@ export default function Home() {
                 </motion.div>
               )}
 
+              {/* Latest Memory Widget */}
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 1.1, duration: 0.6 }}
+                style={{ maxWidth: '800px', margin: '0 auto 2rem' }}
+              >
+                <LatestMemory
+                  memory={data.memories && data.memories.length > 0
+                    ? data.memories.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
+                    : null
+                  }
+                  onViewMemories={() => navigateToSection('memories')}
+                />
+              </motion.div>
+
               <motion.div
                 className="nav-buttons"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 1, duration: 0.6 }}
+                transition={{ delay: 1.2, duration: 0.6 }}
               >
                 {sections.map((section, index) => (
                   <motion.button
@@ -582,7 +699,7 @@ export default function Home() {
                     onClick={() => navigateToSection(section.id)}
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 1.2 + index * 0.1, duration: 0.4 }}
+                    transition={{ delay: 1.3 + index * 0.1, duration: 0.4 }}
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -657,7 +774,9 @@ export default function Home() {
                         <button className="icon-add-btn" onClick={() => openModal('watch')} title="Add Show/Movie">+ 🎬</button>
                         <button className="icon-add-btn" onClick={() => openModal('game')} title="Add Game">+ 🎮</button>
                       </div>
-                    ) : currentSection !== 'dates' ? (
+                    ) : currentSection === 'memories' && memoryView === 'grid' ? (
+                      null
+                    ) : currentSection !== 'dates' && currentSection !== 'memories' ? (
                       <button className="add-btn" onClick={() => openModal(activeSection.type)}>
                         {activeSection.button}
                       </button>

@@ -50,6 +50,8 @@ export interface Memory extends BaseItem {
   description?: string;
   location?: string;
   photos?: string[]; // Array of image URLs or base64 strings
+  month?: number; // 1-12 for January-December
+  year?: number; // Year of the memory
 }
 
 export interface Restaurant extends BaseItem {
