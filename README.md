@@ -51,22 +51,69 @@ The app features a **minimalistic and aesthetic design** with:
 ## Technical Details
 
 ### Built With
-- **HTML5** - Semantic markup
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **React 19** - Latest React features
 - **CSS3** - Custom properties, Grid, Flexbox, animations
-- **Vanilla JavaScript** - No frameworks or dependencies
 - **LocalStorage** - Client-side data persistence
 
 ### Browser Support
 Works in all modern browsers that support:
 - CSS Grid and Flexbox
 - LocalStorage API
-- ES6 JavaScript
+- ES6+ JavaScript
 
 ## Getting Started
 
-1. **Open the app**: Simply open `index.html` in your web browser
-2. **Start adding content**: Click any navigation button and use the "+" button to add items
-3. **Your data is saved**: All data is automatically saved to your browser's local storage
+### Development
+
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Open your browser**: Navigate to [http://localhost:3000](http://localhost:3000)
+
+### Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Deployment to Vercel
+
+This app is optimized for deployment on Vercel:
+
+### Option 1: Deploy with Vercel CLI
+
+1. **Install Vercel CLI**:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy**:
+   ```bash
+   vercel
+   ```
+
+3. **Follow the prompts** to complete deployment
+
+### Option 2: Deploy via Vercel Dashboard
+
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com)
+3. Click "Import Project"
+4. Select your repository
+5. Vercel will automatically detect Next.js and configure the build settings
+6. Click "Deploy"
+
+Your app will be live with a production URL!
 
 ## Usage
 
