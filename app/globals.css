@@ -8,36 +8,34 @@
 }
 
 :root {
-    /* Pastel Y2K Colors */
-    --retro-purple: #C4A1FF;
-    --retro-pink: #FFB3E6;
-    --retro-blue: #A8DAFF;
-    --retro-mint: #B8E6D5;
-    --retro-yellow: #FFE5B4;
-    --retro-lavender: #E6E6FA;
+    /* Cute Green & Pastel Colors */
+    --cute-green: #a8e6a1;
+    --mint-green: #b8f3d0;
+    --dark-green: #6b9e78;
+    --soft-pink: #ffc9e3;
+    --soft-yellow: #fff4b8;
+    --soft-blue: #c9e4ff;
+    --soft-purple: #e5d4ff;
 
-    /* Windows 98 Colors */
-    --win98-gray: #c0c0c0;
-    --win98-dark: #808080;
-    --win98-light: #ffffff;
-    --win98-blue: #000080;
-    --win98-highlight: #0000ff;
-
-    /* Text */
-    --text-primary: #2d2d2d;
-    --text-retro: #5a189a;
+    /* Main Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fff7;
+    --bg-card: #f0fff0;
+    --text-primary: #2d4a2d;
+    --text-secondary: #5a7a5a;
 
     /* Borders */
-    --border-3d-light: #dfdfdf #404040 #404040 #dfdfdf;
-    --border-3d-dark: #404040 #dfdfdf #dfdfdf #404040;
+    --border-color: #a8e6a1;
+    --border-3d-light: #d4ffd1 #6b9e78 #6b9e78 #d4ffd1;
+    --border-3d-dark: #6b9e78 #d4ffd1 #d4ffd1 #6b9e78;
 }
 
 body {
     font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-    background: #f0e5ff;
+    background: #ffffff;
     background-image:
-        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(196, 161, 255, 0.1) 2px, rgba(196, 161, 255, 0.1) 4px),
-        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(196, 161, 255, 0.1) 2px, rgba(196, 161, 255, 0.1) 4px);
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(168, 230, 161, 0.08) 2px, rgba(168, 230, 161, 0.08) 4px),
+        repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(168, 230, 161, 0.08) 2px, rgba(168, 230, 161, 0.08) 4px);
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
@@ -72,7 +70,7 @@ body::before {
 
 /* Retro Window Styles */
 .window {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 2px solid;
     border-color: var(--border-3d-light);
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
@@ -98,7 +96,7 @@ body::before {
 .window-btn {
     width: 16px;
     height: 16px;
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 1px solid;
     border-color: var(--border-3d-light);
     display: flex;
@@ -156,10 +154,10 @@ body::before {
     font-family: 'Press Start 2P', 'VT323', monospace;
     font-size: clamp(4rem, 12vw, 8rem);
     font-weight: bold;
-    color: var(--retro-purple);
+    color: var(--cute-green);
     text-shadow:
-        4px 4px 0 var(--retro-pink),
-        8px 8px 0 var(--retro-blue);
+        4px 4px 0 var(--soft-pink),
+        8px 8px 0 var(--soft-blue);
     line-height: 1;
     animation: pixelGlitch 3s infinite;
 }
@@ -182,7 +180,7 @@ body::before {
 .letter-divider {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(3rem, 8vw, 6rem);
-    color: var(--retro-pink);
+    color: var(--soft-pink);
     font-weight: bold;
     opacity: 0.7;
 }
@@ -191,7 +189,7 @@ body::before {
 .gif-placeholder {
     width: clamp(100px, 15vw, 150px);
     height: clamp(100px, 15vw, 150px);
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 3px solid;
     border-color: var(--border-3d-dark);
     display: flex;
@@ -215,11 +213,11 @@ body::before {
     position: absolute;
     bottom: 5px;
     font-size: 0.7rem;
-    color: var(--text-retro);
+    color: var(--dark-green);
     font-weight: bold;
     background: rgba(255, 255, 255, 0.7);
     padding: 2px 6px;
-    border: 1px solid var(--retro-purple);
+    border: 1px solid var(--cute-green);
 }
 
 /* Retro Navigation Buttons */
@@ -231,7 +229,7 @@ body::before {
 }
 
 .nav-button {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 3px solid;
     border-color: var(--border-3d-light);
     padding: 1.5rem 1rem;
@@ -266,7 +264,7 @@ body::before {
     font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--text-retro);
+    color: var(--dark-green);
 }
 
 .nav-button-desc {
@@ -288,7 +286,7 @@ body::before {
 }
 
 .landing-date-item {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 3px solid;
     border-color: var(--border-3d-light);
     padding: 0.8rem 1rem;
@@ -301,14 +299,14 @@ body::before {
 }
 
 .landing-date-item:hover {
-    background: var(--retro-lavender);
+    background: var(--mint-green);
     transform: translate(-1px, -1px);
     box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .landing-date-title {
     font-weight: bold;
-    color: var(--text-retro);
+    color: var(--dark-green);
     font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
 }
 
@@ -330,7 +328,7 @@ body::before {
     border: 2px solid;
     border-color: var(--border-3d-light);
     overflow: hidden;
-    background: var(--win98-gray);
+    background: var(--bg-card);
     box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: all 0.1s;
@@ -339,7 +337,7 @@ body::before {
 .photo-item:hover {
     transform: translate(-1px, -1px);
     box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-    border-color: var(--retro-purple);
+    border-color: var(--cute-green);
 }
 
 .photo-item img {
@@ -362,7 +360,7 @@ body::before {
     border: 2px solid;
     border-color: var(--border-3d-light);
     overflow: hidden;
-    background: var(--win98-gray);
+    background: var(--bg-card);
     box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
     position: relative;
 }
@@ -396,25 +394,76 @@ body::before {
     background: #ff5252;
 }
 
+/* Photo Lightbox */
+.photo-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.lightbox-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    object-fit: contain;
+    border: 3px solid var(--cute-green);
+    box-shadow: 0 8px 32px rgba(168, 230, 161, 0.3);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    background: var(--cute-green);
+    border: 2px solid var(--dark-green);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-close:hover {
+    background: var(--dark-green);
+}
+
 /* Header */
 .header {
     text-align: center;
-    padding: 2rem 0;
-    margin-bottom: 1.5rem;
+    padding: 1rem 0 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .title {
     font-family: 'Press Start 2P', monospace;
     font-size: clamp(1.5rem, 4vw, 2.5rem);
-    color: var(--retro-purple);
+    color: var(--cute-green);
     margin-bottom: 0.5rem;
-    text-shadow: 3px 3px 0 var(--retro-pink);
+    text-shadow: 3px 3px 0 var(--soft-pink);
 }
 
 .subtitle {
     font-family: 'VT323', monospace;
     font-size: 1.5rem;
-    color: var(--text-retro);
+    color: var(--dark-green);
 }
 
 /* Navigation */
@@ -425,7 +474,7 @@ body::before {
     justify-content: center;
     margin-bottom: 2rem;
     padding: 1rem;
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 2px solid;
     border-color: var(--border-3d-light);
 }
@@ -434,7 +483,7 @@ body::before {
     padding: 0.6rem 1.2rem;
     border: 2px solid;
     border-color: var(--border-3d-light);
-    background: var(--win98-gray);
+    background: var(--bg-card);
     color: var(--text-primary);
     cursor: pointer;
     font-size: 0.9rem;
@@ -452,40 +501,36 @@ body::before {
 }
 
 .nav-btn.active {
-    background: var(--retro-lavender);
-    border-color: var(--retro-purple);
-    color: var(--text-retro);
+    background: var(--mint-green);
+    border-color: var(--cute-green);
+    color: var(--dark-green);
 }
 
 /* Back Button */
 .back-btn {
-    background: var(--win98-gray);
-    border: 2px solid;
-    border-color: var(--border-3d-light);
-    color: var(--text-primary);
-    padding: 0.5rem 0.8rem;
+    background: transparent;
+    border: none;
+    color: var(--dark-green);
+    padding: 0.3rem 0.5rem;
     cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 0.9rem;
+    font-weight: normal;
     transition: all 0.1s;
-    margin-bottom: 0.5rem;
+    margin-top: 0.3rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.2rem;
+    opacity: 0.7;
 }
 
 .back-btn:hover {
-    background: #d4d4d4;
+    opacity: 1;
     transform: translateX(-3px);
-}
-
-.back-btn:active {
-    border-color: var(--border-3d-dark);
 }
 
 /* Main Content */
 .main-content {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 2px solid;
     border-color: var(--border-3d-light);
     padding: 2rem;
@@ -519,19 +564,19 @@ body::before {
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 3px dotted var(--retro-purple);
+    border-bottom: 3px dotted var(--cute-green);
 }
 
 .section-header h2 {
     font-family: 'Press Start 2P', monospace;
     font-size: 1.5rem;
-    color: var(--text-retro);
+    color: var(--dark-green);
 }
 
 /* Buttons */
 .add-btn {
     padding: 0.7rem 1.5rem;
-    background: var(--retro-pink);
+    background: var(--soft-pink);
     color: white;
     border: 3px solid;
     border-color: var(--border-3d-light);
@@ -567,6 +612,31 @@ body::before {
     font-size: 0.85rem;
 }
 
+.icon-add-btn {
+    padding: 0.5rem 0.8rem;
+    background: var(--mint-green);
+    color: var(--text-primary);
+    border: 2px solid;
+    border-color: var(--border-3d-light);
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.1s;
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.icon-add-btn:hover {
+    background: var(--cute-green);
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
+}
+
+.icon-add-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
 /* Grid Layout */
 .grid {
     display: grid;
@@ -577,7 +647,7 @@ body::before {
 
 /* Cards - Retro Window Style */
 .card {
-    background: var(--retro-lavender);
+    background: var(--mint-green);
     border: 3px solid;
     border-color: var(--border-3d-light);
     padding: 1rem;
@@ -592,7 +662,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, var(--retro-purple), var(--retro-pink), var(--retro-blue));
+    background: linear-gradient(90deg, var(--cute-green), var(--soft-pink), var(--soft-blue));
 }
 
 .card:hover {
@@ -611,7 +681,7 @@ body::before {
     font-family: 'VT323', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 1.2rem;
     font-weight: bold;
-    color: var(--text-retro);
+    color: var(--dark-green);
     margin-bottom: 0.5rem;
 }
 
@@ -624,14 +694,14 @@ body::before {
 
 .card-date {
     font-size: 0.85rem;
-    color: var(--retro-purple);
+    color: var(--cute-green);
     font-weight: bold;
 }
 
 .card-status {
     display: inline-block;
     padding: 0.3rem 0.8rem;
-    background: var(--retro-mint);
+    background: var(--mint-green);
     border: 2px solid;
     border-color: var(--border-3d-light);
     font-size: 0.75rem;
@@ -640,15 +710,15 @@ body::before {
 }
 
 .card-status.completed {
-    background: var(--retro-mint);
+    background: var(--mint-green);
 }
 
 .card-status.pending {
-    background: var(--retro-yellow);
+    background: var(--soft-yellow);
 }
 
 .edit-btn {
-    background: var(--retro-blue);
+    background: var(--soft-blue);
     border: 2px solid;
     border-color: var(--border-3d-light);
     color: white;
@@ -706,7 +776,7 @@ body::before {
 }
 
 .list-item {
-    background: var(--retro-blue);
+    background: var(--soft-blue);
     opacity: 0.9;
     border: 3px solid;
     border-color: var(--border-3d-light);
@@ -727,7 +797,7 @@ body::before {
     font-size: 1.1rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
-    color: var(--text-retro);
+    color: var(--dark-green);
 }
 
 .list-item-content p {
@@ -754,7 +824,7 @@ body::before {
 }
 
 .modal-content {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 3px solid;
     border-color: var(--border-3d-light);
     box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
@@ -777,7 +847,7 @@ body::before {
 }
 
 .close {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 2px solid;
     border-color: var(--border-3d-light);
     width: 20px;
@@ -800,7 +870,7 @@ body::before {
     font-family: 'Press Start 2P', monospace;
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
-    color: var(--text-retro);
+    color: var(--dark-green);
     padding: 1rem;
     padding-top: 0;
 }
@@ -835,7 +905,7 @@ body::before {
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-    outline: 2px dotted var(--retro-purple);
+    outline: 2px dotted var(--cute-green);
     outline-offset: 2px;
 }
 
@@ -849,13 +919,13 @@ body::before {
     gap: 0.8rem;
     padding: 1rem;
     border-top: 2px solid var(--win98-dark);
-    background: var(--win98-gray);
+    background: var(--bg-card);
 }
 
 .submit-btn {
     flex: 1;
     padding: 0.8rem;
-    background: var(--retro-mint);
+    background: var(--mint-green);
     color: var(--text-primary);
     border: 3px solid;
     border-color: var(--border-3d-light);
@@ -882,7 +952,7 @@ body::before {
 .cancel-btn {
     flex: 1;
     padding: 0.8rem;
-    background: var(--win98-gray);
+    background: var(--bg-card);
     color: var(--text-primary);
     border: 3px solid;
     border-color: var(--border-3d-light);
@@ -939,7 +1009,7 @@ body::before {
     align-items: center;
     margin-bottom: 1rem;
     padding: 0.5rem;
-    background: var(--retro-lavender);
+    background: var(--mint-green);
     border: 2px solid;
     border-color: var(--border-3d-light);
 }
@@ -947,11 +1017,11 @@ body::before {
 .calendar-header h3 {
     font-family: 'Press Start 2P', monospace;
     font-size: 1rem;
-    color: var(--text-retro);
+    color: var(--dark-green);
 }
 
 .calendar-nav-btn {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 2px solid;
     border-color: var(--border-3d-light);
     padding: 0.4rem 0.8rem;
@@ -974,7 +1044,7 @@ body::before {
     text-align: center;
     padding: 0.5rem;
     font-weight: bold;
-    background: var(--retro-blue);
+    background: var(--soft-blue);
     opacity: 0.8;
     font-size: 0.85rem;
 }
@@ -994,16 +1064,16 @@ body::before {
 }
 
 .calendar-day:hover {
-    background: var(--retro-yellow);
+    background: var(--soft-yellow);
 }
 
 .calendar-day.has-event {
-    background: var(--retro-pink);
+    background: var(--soft-pink);
     opacity: 0.9;
 }
 
 .calendar-day.today {
-    border: 3px solid var(--retro-purple);
+    border: 3px solid var(--cute-green);
 }
 
 .calendar-day.other-month {
@@ -1037,8 +1107,8 @@ body::before {
     .letter {
         font-size: 2.5rem;
         text-shadow:
-            2px 2px 0 var(--retro-pink),
-            3px 3px 0 var(--retro-blue);
+            2px 2px 0 var(--soft-pink),
+            3px 3px 0 var(--soft-blue);
     }
 
     .letter-divider {
@@ -1171,7 +1241,7 @@ body::before {
         justify-content: space-around;
         align-items: center;
         padding: 0.5rem;
-        background: var(--win98-gray);
+        background: var(--bg-card);
         border: 2px solid;
         border-color: var(--border-3d-light);
         margin-bottom: 1rem;
@@ -1212,7 +1282,7 @@ body::before {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--win98-gray);
+    background: var(--bg-card);
     border: 2px solid;
     border-color: var(--border-3d-dark);
 }

@@ -30,6 +30,7 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [zoomedPhoto, setZoomedPhoto] = useState<string | null>(null);
 
   const navigateToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
@@ -151,7 +152,7 @@ export default function Home() {
             {memory.photos && memory.photos.length > 0 && (
               <div className="photo-gallery">
                 {memory.photos.map((photo, idx) => (
-                  <div key={idx} className="photo-item">
+                  <div key={idx} className="photo-item" onClick={() => setZoomedPhoto(photo)}>
                     <img src={photo} alt={`${memory.title} ${idx + 1}`} />
                   </div>
                 ))}
@@ -533,6 +534,38 @@ export default function Home() {
                 </div>
               </div>
 
+              {data.dates && data.dates.filter((d: DatePlan) => d.status === 'Planned').length > 0 && (
+                <motion.div
+                  className="landing-dates"
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.9, duration: 0.6 }}
+                >
+                  <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '0.8rem', marginBottom: '0.8rem', color: 'var(--dark-green)', textAlign: 'center' }}>
+                    📅 Upcoming Dates
+                  </h3>
+                  <div className="landing-dates-list">
+                    {data.dates
+                      .filter((d: DatePlan) => d.status === 'Planned')
+                      .sort((a: DatePlan, b: DatePlan) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                      .slice(0, 3)
+                      .map((date: DatePlan) => (
+                        <motion.div
+                          key={date.id}
+                          className="landing-date-item"
+                          whileHover={{ scale: 1.02 }}
+                          onClick={() => navigateToSection('dates')}
+                        >
+                          <span className="landing-date-title">{date.title}</span>
+                          <span className="landing-date-date">
+                            {formatDate(date.date)} {date.time && `• ${date.time}`}
+                          </span>
+                        </motion.div>
+                      ))}
+                  </div>
+                </motion.div>
+              )}
+
               <motion.div
                 className="nav-buttons"
                 initial={{ y: 30, opacity: 0 }}
@@ -600,6 +633,7 @@ export default function Home() {
             className="container"
           >
             <header className="header">
+              <h1 className="title">{activeSection?.title}</h1>
               <motion.button
                 className="back-btn"
                 onClick={() => setCurrentView('landing')}
@@ -609,7 +643,6 @@ export default function Home() {
               >
                 ← Back
               </motion.button>
-              <h1 className="title">{activeSection?.title}</h1>
             </header>
 
             <nav className="mobile-nav">
@@ -649,15 +682,15 @@ export default function Home() {
                     <h2>{activeSection.title}</h2>
                     {currentSection === 'things' ? (
                       <div className="multi-add-btns">
-                        <button className="add-btn" onClick={() => openModal('book')}>+ Add Book</button>
-                        <button className="add-btn" onClick={() => openModal('watch')}>+ Add Show/Movie</button>
-                        <button className="add-btn" onClick={() => openModal('game')}>+ Add Game</button>
+                        <button className="icon-add-btn" onClick={() => openModal('book')} title="Add Book">+ 📚</button>
+                        <button className="icon-add-btn" onClick={() => openModal('watch')} title="Add Show/Movie">+ 🎬</button>
+                        <button className="icon-add-btn" onClick={() => openModal('game')} title="Add Game">+ 🎮</button>
                       </div>
-                    ) : (
+                    ) : currentSection !== 'dates' ? (
                       <button className="add-btn" onClick={() => openModal(activeSection.type)}>
                         {activeSection.button}
                       </button>
-                    )}
+                    ) : null}
                   </div>
                   {renderSection(activeSection.type, currentSection)}
                 </motion.section>
@@ -786,6 +819,21 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {zoomedPhoto && (
+        <motion.div
+          className="photo-lightbox"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={() => setZoomedPhoto(null)}
+        >
+          <div className="lightbox-content">
+            <button className="lightbox-close" onClick={() => setZoomedPhoto(null)}>×</button>
+            <img src={zoomedPhoto} alt="Zoomed" />
+          </div>
+        </motion.div>
+      )}
     </>
   );
 }
