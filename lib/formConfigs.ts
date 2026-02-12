@@ -5,8 +5,7 @@ export const formConfigs: Record<string, FormConfig> = {
     title: 'Add Memory',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true },
-      { name: 'date', label: 'Date', type: 'date', required: true },
-      { name: 'description', label: 'Description', type: 'textarea', required: true },
+      { name: 'description', label: 'Description', type: 'textarea', required: false },
       { name: 'location', label: 'Location', type: 'text', required: false }
     ]
   },
@@ -14,8 +13,8 @@ export const formConfigs: Record<string, FormConfig> = {
     title: 'Plan Date',
     fields: [
       { name: 'title', label: 'Date Title', type: 'text', required: true },
-      { name: 'date', label: 'Date & Time', type: 'datetime-local', required: true },
-      { name: 'location', label: 'Location', type: 'text', required: true },
+      { name: 'time', label: 'Time', type: 'text', required: false },
+      { name: 'location', label: 'Location', type: 'text', required: false },
       { name: 'description', label: 'Details', type: 'textarea', required: false },
       { name: 'status', label: 'Status', type: 'select', options: ['Planned', 'Completed'], required: true }
     ]

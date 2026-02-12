@@ -28,14 +28,16 @@ export default function Home() {
   const [currentType, setCurrentType] = useState<ItemType | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [editingItem, setEditingItem] = useState<any | null>(null);
 
   const navigateToSection = (sectionId: string) => {
     setCurrentSection(sectionId);
     setCurrentView('content');
   };
 
-  const openModal = (type: ItemType) => {
+  const openModal = (type: ItemType, item?: any) => {
     setCurrentType(type);
+    setEditingItem(item || null);
     setIsModalOpen(true);
   };
 
@@ -43,6 +45,7 @@ export default function Home() {
     setIsModalOpen(false);
     setCurrentType(null);
     setSelectedDate(null);
+    setEditingItem(null);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -50,10 +53,15 @@ export default function Home() {
     if (!currentType) return;
 
     const formData = new FormData(e.currentTarget);
-    const item: any = {
+    const item: any = editingItem ? { ...editingItem } : {
       id: Date.now(),
       createdAt: new Date().toISOString()
     };
+
+    // Add selected date if it exists (from calendar)
+    if (selectedDate && currentType === 'date') {
+      item.date = selectedDate;
+    }
 
     for (let [key, value] of formData.entries()) {
       if (key === 'visited') {
@@ -67,10 +75,20 @@ export default function Home() {
 
     const sectionKey = getSectionKey(currentType) as keyof AppData;
     const currentArray = data[sectionKey] || [];
-    setData({
-      ...data,
-      [sectionKey]: [...currentArray, item]
-    });
+
+    if (editingItem) {
+      // Update existing item
+      setData({
+        ...data,
+        [sectionKey]: currentArray.map((i: any) => i.id === item.id ? item : i)
+      });
+    } else {
+      // Add new item
+      setData({
+        ...data,
+        [sectionKey]: [...currentArray, item]
+      });
+    }
 
     closeModal();
     e.currentTarget.reset();
@@ -96,11 +114,14 @@ export default function Home() {
             <div className="card-header">
               <div>
                 <h3>{memory.title}</h3>
-                <p className="card-date">{formatDate(memory.date)}</p>
+                {memory.date && <p className="card-date">{formatDate(memory.date)}</p>}
               </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, memory.id)}>×</button>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button className="edit-btn" onClick={() => openModal(type, memory)}>✎</button>
+                <button className="delete-btn" onClick={() => deleteItem(type, memory.id)}>×</button>
+              </div>
             </div>
-            <p>{memory.description}</p>
+            {memory.description && <p>{memory.description}</p>}
             {memory.location && <p><strong>📍 {memory.location}</strong></p>}
           </>
         );
@@ -115,7 +136,10 @@ export default function Home() {
                 <h3>{restaurant.name}</h3>
                 <p className="card-date">{restaurant.cuisine}</p>
               </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, restaurant.id)}>×</button>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button className="edit-btn" onClick={() => openModal(type, restaurant)}>✎</button>
+                <button className="delete-btn" onClick={() => deleteItem(type, restaurant.id)}>×</button>
+              </div>
             </div>
             <p>📍 {restaurant.location}</p>
             {restaurant.rating && <p>⭐ {restaurant.rating}/5</p>}
@@ -135,7 +159,10 @@ export default function Home() {
                 <h3>{place.name}</h3>
                 <p className="card-date">{place.type || 'Place'}</p>
               </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, place.id)}>×</button>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button className="edit-btn" onClick={() => openModal(type, place)}>✎</button>
+                <button className="delete-btn" onClick={() => deleteItem(type, place.id)}>×</button>
+              </div>
             </div>
             {place.location && <p>📍 {place.location}</p>}
             {place.instagramPage && <p>📸 <a href={`https://instagram.com/${place.instagramPage.replace('@', '')}`} target="_blank" rel="noopener noreferrer" style={{color: 'var(--retro-purple)', textDecoration: 'underline'}}>{place.instagramPage}</a></p>}
@@ -163,7 +190,10 @@ export default function Home() {
                 <h3>{dateIdea.title}</h3>
                 <span className="card-status">{dateIdea.category}</span>
               </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, dateIdea.id)}>×</button>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button className="edit-btn" onClick={() => openModal(type, dateIdea)}>✎</button>
+                <button className="delete-btn" onClick={() => deleteItem(type, dateIdea.id)}>×</button>
+              </div>
             </div>
             <p>{dateIdea.description}</p>
             {dateIdea.estimatedCost && <p><strong>💰 {dateIdea.estimatedCost}</strong></p>}
@@ -184,7 +214,10 @@ export default function Home() {
                 <h3>{thingItem.name || thingItem.title}</h3>
                 <p className="card-date">{thingItem.category || thingItem.type}</p>
               </div>
-              <button className="delete-btn" onClick={() => deleteItem(type, thingItem.id)}>×</button>
+              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                <button className="edit-btn" onClick={() => openModal(type, thingItem)}>✎</button>
+                <button className="delete-btn" onClick={() => deleteItem(type, thingItem.id)}>×</button>
+              </div>
             </div>
             <span className={`card-status ${thingItem.status === 'Completed' || thingItem.status.includes('Completed') ? 'completed' : 'pending'}`}>
               {thingItem.status}
@@ -208,17 +241,25 @@ export default function Home() {
   };
 
   const renderDateItem = (item: DatePlan) => {
+    const displayDate = item.date ? formatDate(item.date) : '';
+    const displayTime = item.time || '';
     return (
       <div key={item.id} className="list-item">
         <div className="list-item-content">
           <h3>{item.title}</h3>
-          <p>📅 {formatDateTime(item.date)} | 📍 {item.location}</p>
+          <p>
+            📅 {displayDate} {displayTime && `| 🕐 ${displayTime}`}
+            {item.location && ` | 📍 ${item.location}`}
+          </p>
           {item.description && <p>{item.description}</p>}
           <span className={`card-status ${item.status === 'Completed' ? 'completed' : 'pending'}`}>
             {item.status}
           </span>
         </div>
-        <button className="delete-btn" onClick={() => deleteItem('date', item.id)}>×</button>
+        <div style={{ display: 'flex', gap: '0.3rem' }}>
+          <button className="edit-btn" onClick={() => openModal('date', item)}>✎</button>
+          <button className="delete-btn" onClick={() => deleteItem('date', item.id)}>×</button>
+        </div>
       </div>
     );
   };
@@ -481,6 +522,38 @@ export default function Home() {
                   </motion.button>
                 ))}
               </motion.div>
+
+              {data.dates && data.dates.filter((d: DatePlan) => d.status === 'Planned').length > 0 && (
+                <motion.div
+                  className="landing-dates"
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 1.6, duration: 0.6 }}
+                >
+                  <h3 style={{ fontFamily: "'Press Start 2P', monospace", fontSize: '0.9rem', marginBottom: '1rem', color: 'var(--text-retro)', textAlign: 'center' }}>
+                    📅 Upcoming Dates
+                  </h3>
+                  <div className="landing-dates-list">
+                    {data.dates
+                      .filter((d: DatePlan) => d.status === 'Planned')
+                      .sort((a: DatePlan, b: DatePlan) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                      .slice(0, 3)
+                      .map((date: DatePlan) => (
+                        <motion.div
+                          key={date.id}
+                          className="landing-date-item"
+                          whileHover={{ scale: 1.02 }}
+                          onClick={() => navigateToSection('dates')}
+                        >
+                          <span className="landing-date-title">{date.title}</span>
+                          <span className="landing-date-date">
+                            {formatDate(date.date)} {date.time && `• ${date.time}`}
+                          </span>
+                        </motion.div>
+                      ))}
+                  </div>
+                </motion.div>
+              )}
             </motion.div>
           </motion.div>
         ) : (
@@ -568,46 +641,59 @@ export default function Home() {
               transition={{ duration: 0.3 }}
             >
               <div className="modal-title-bar">
-                <span>{formConfigs[currentType].title}</span>
+                <span>{editingItem ? `Edit ${formConfigs[currentType].title.replace('Add ', '')}` : formConfigs[currentType].title}</span>
                 <span className="close" onClick={closeModal}>×</span>
               </div>
+              {selectedDate && currentType === 'date' && (
+                <div style={{ padding: '1rem', background: 'var(--retro-lavender)', borderBottom: '2px solid var(--win98-dark)' }}>
+                  <p style={{ margin: 0, fontWeight: 'bold' }}>📅 Date: {formatDate(selectedDate)}</p>
+                </div>
+              )}
               <form onSubmit={handleFormSubmit}>
                 <div>
-                  {formConfigs[currentType].fields.map((field) => (
-                    <div key={field.name} className="form-group">
-                      <label htmlFor={field.name}>
-                        {field.label}{field.required ? ' *' : ''}
-                      </label>
-                      {field.type === 'textarea' ? (
-                        <textarea
-                          id={field.name}
-                          name={field.name}
-                          required={field.required}
-                        />
-                      ) : field.type === 'select' ? (
-                        <select
-                          id={field.name}
-                          name={field.name}
-                          required={field.required}
-                        >
-                          <option value="">Select {field.label}</option>
-                          {field.options?.map(opt => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type={field.type}
-                          id={field.name}
-                          name={field.name}
-                          required={field.required}
-                          min={field.min}
-                          max={field.max}
-                          defaultValue={field.name === 'date' && selectedDate ? selectedDate : ''}
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {formConfigs[currentType].fields.map((field) => {
+                    const fieldValue = editingItem ? editingItem[field.name] : '';
+                    const selectValue = field.name === 'visited' && editingItem ?
+                      (editingItem.visited ? 'Yes' : 'No') : fieldValue;
+
+                    return (
+                      <div key={field.name} className="form-group">
+                        <label htmlFor={field.name}>
+                          {field.label}{field.required ? ' *' : ''}
+                        </label>
+                        {field.type === 'textarea' ? (
+                          <textarea
+                            id={field.name}
+                            name={field.name}
+                            required={field.required}
+                            defaultValue={fieldValue}
+                          />
+                        ) : field.type === 'select' ? (
+                          <select
+                            id={field.name}
+                            name={field.name}
+                            required={field.required}
+                            defaultValue={selectValue}
+                          >
+                            <option value="">Select {field.label}</option>
+                            {field.options?.map(opt => (
+                              <option key={opt} value={opt}>{opt}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type={field.type}
+                            id={field.name}
+                            name={field.name}
+                            required={field.required}
+                            min={field.min}
+                            max={field.max}
+                            defaultValue={fieldValue}
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="form-actions">
                   <button type="submit" className="submit-btn">Save</button>
