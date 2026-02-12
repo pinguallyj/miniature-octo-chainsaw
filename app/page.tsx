@@ -517,12 +517,12 @@ export default function Home() {
 
       return (
         <>
-          <div className="flex justify-between items-center mb-4">
+          <div style={{ marginBottom: '1rem' }}>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setMemoryView('timeline')}
-              className="px-4 py-2 bg-purple-300 border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] font-bold"
+              className="timeline-view-btn"
             >
               📜 Timeline View
             </motion.button>
