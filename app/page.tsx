@@ -13,6 +13,7 @@ import MonthGrid from '@/components/MonthGrid';
 import MonthView from '@/components/MonthView';
 import Timeline from '@/components/Timeline';
 import LatestMemory from '@/components/LatestMemory';
+import RetroImageLoader from '@/components/RetroImageLoader';
 
 const initialData: AppData = {
   memories: [],
@@ -227,7 +228,7 @@ export default function Home() {
               <div className="photo-gallery">
                 {memory.photos.map((photo, idx) => (
                   <div key={idx} className="photo-item" onClick={() => setZoomedPhoto(photo)} style={{ position: 'relative' }}>
-                    <Image src={photo} alt={`${memory.title} ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
+                    <RetroImageLoader src={photo} alt={`${memory.title} ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
                   </div>
                 ))}
               </div>
@@ -658,7 +659,7 @@ export default function Home() {
             >
               <div className="hero-letters">
                   <div className="gif-placeholder left">
-                      <Image src="/bulb.gif" alt="Character Z" width={100} height={100} />
+                      <RetroImageLoader src="/bulb.gif" alt="Character Z" width={100} height={100} />
                   </div>
                 <div className="letters-container">
                   <motion.span
@@ -680,7 +681,7 @@ export default function Home() {
                   </motion.span>
                 </div>
                   <div className="gif-placeholder right">
-                      <Image src="/milk.gif" alt="Character S" width={100} height={100} />
+                      <RetroImageLoader src="/milk.gif" alt="Character S" width={100} height={100} />
                   </div>
               </div>
 
@@ -930,7 +931,7 @@ export default function Home() {
                         {editingItem?.photos && editingItem.photos.map((photo: string, idx: number) => (
                           !deletedPhotoIndices.includes(idx) && (
                             <div key={`existing-${idx}`} className="photo-preview-item" style={{ position: 'relative' }}>
-                              <Image src={photo} alt={`Existing ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
+                              <RetroImageLoader src={photo} alt={`Existing ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
                               <button
                                 type="button"
                                 className="photo-remove-btn"
@@ -943,7 +944,7 @@ export default function Home() {
                         ))}
                         {uploadedPhotos.map((photo, idx) => (
                           <div key={`new-${idx}`} className="photo-preview-item" style={{ position: 'relative' }}>
-                            <Image src={photo} alt={`New ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
+                            <RetroImageLoader src={photo} alt={`New ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
                             <button
                               type="button"
                               className="photo-remove-btn"
@@ -977,7 +978,7 @@ export default function Home() {
         >
           <div className="lightbox-content" style={{ position: 'relative' }}>
             <button className="lightbox-close" onClick={() => setZoomedPhoto(null)}>×</button>
-            <Image src={zoomedPhoto} alt="Zoomed" fill style={{ objectFit: 'contain' }} />
+            <RetroImageLoader src={zoomedPhoto} alt="Zoomed" fill style={{ objectFit: 'contain' }} />
           </div>
         </motion.div>
       )}
