@@ -77,16 +77,31 @@ export default function Home() {
     const files = e.target.files;
     if (!files) return;
 
-    const photoPromises = Array.from(files).map(file => {
-      return new Promise<string>((resolve) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result as string);
-        reader.readAsDataURL(file);
-      });
-    });
+    try {
+      const photoPromises = Array.from(files).map(async (file) => {
+        const formData = new FormData();
+        formData.append('file', file);
 
-    const photos = await Promise.all(photoPromises);
-    setUploadedPhotos(prev => [...prev, ...photos]);
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Upload failed');
+        }
+
+        const data = await response.json();
+        return data.url;
+      });
+
+      const photos = await Promise.all(photoPromises);
+      setUploadedPhotos(prev => [...prev, ...photos]);
+    } catch (error) {
+      console.error('Photo upload error:', error);
+      alert('Failed to upload photos. Please make sure Vercel Blob is configured.');
+    }
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {

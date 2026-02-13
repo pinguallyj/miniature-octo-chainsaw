@@ -56,6 +56,7 @@ The app features a **minimalistic and aesthetic design** with:
 - **React 19** - Latest React features
 - **CSS3** - Custom properties, Grid, Flexbox, animations
 - **LocalStorage** - Client-side data persistence
+- **Vercel Blob** - Cloud storage for photo uploads
 
 ### Browser Support
 Works in all modern browsers that support:
@@ -115,6 +116,33 @@ This app is optimized for deployment on Vercel:
 
 Your app will be live with a production URL!
 
+### Setting up Vercel Blob Storage
+
+To enable photo uploads with persistent storage:
+
+1. **Go to your Vercel project dashboard**
+2. **Navigate to the Storage tab**
+3. **Click "Create Database"** and select **"Blob"**
+4. **Connect the Blob store** to your project
+
+Vercel will automatically add the `BLOB_READ_WRITE_TOKEN` environment variable to your deployment.
+
+#### Local Development
+
+For local development with Vercel Blob:
+
+1. **Get your Blob token** from [Vercel Dashboard → Storage](https://vercel.com/dashboard/stores)
+2. **Create a `.env.local` file** in the project root:
+   ```bash
+   BLOB_READ_WRITE_TOKEN=your_token_here
+   ```
+3. **Run the dev server**:
+   ```bash
+   npm run dev
+   ```
+
+**Note**: Without Vercel Blob configured, photo uploads will fail. The `.env.example` file shows the required environment variables.
+
 ## Usage
 
 ### Adding Items
@@ -132,12 +160,21 @@ Your app will be live with a production URL!
 
 ## Data Storage
 
-All data is stored locally in your browser using LocalStorage. This means:
+### Application Data
+All data (memories, dates, restaurants, etc.) is stored locally in your browser using LocalStorage. This means:
 - ✅ Your data persists between sessions
 - ✅ No server or account required
 - ✅ Complete privacy - data never leaves your device
 - ⚠️ Data is browser-specific (won't sync across devices)
 - ⚠️ Clearing browser data will delete all saved items
+
+### Photo Storage
+Photos are stored in **Vercel Blob** storage for persistent, cloud-based storage:
+- ✅ Photos persist even when serverless functions restart
+- ✅ Fast CDN-backed delivery
+- ✅ No file size limitations from browser storage
+- ✅ Photos are accessible across devices (via their URLs stored in localStorage)
+- ℹ️ Requires Vercel Blob to be configured (see Deployment section)
 
 ## Customization
 
