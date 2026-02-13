@@ -41,9 +41,31 @@ export default function RetroImageLoader({
     }
   }, [isGif, isLoading]);
 
+  // For fill images, don't use wrapper - just return Image directly
+  if (fill) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill={fill}
+        style={{
+          objectFit: style?.objectFit || 'cover',
+        }}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setHasError(true);
+        }}
+        priority={priority}
+        unoptimized={isGif}
+        className={className}
+      />
+    );
+  }
+
   return (
     <div
-      className={`retro-image-container ${fill ? 'retro-image-fill' : ''} ${className || ''}`}
+      className={`retro-image-container ${className || ''}`}
       onClick={onClick}
     >
       {isLoading && !isGif && (
