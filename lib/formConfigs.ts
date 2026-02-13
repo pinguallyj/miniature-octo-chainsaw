@@ -5,6 +5,7 @@ export const formConfigs: Record<string, FormConfig> = {
     title: 'Add Memory',
     fields: [
       { name: 'title', label: 'Title', type: 'text', required: true },
+      { name: 'date', label: 'Memory Date', type: 'date', required: false },
       { name: 'description', label: 'Description', type: 'textarea', required: false },
       { name: 'location', label: 'Location', type: 'text', required: false }
     ]

@@ -7,6 +7,13 @@ export function formatDate(dateString: string): string {
   });
 }
 
+export function formatDateShort(dateString: string): string {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  return `${day}.${month}`;
+}
+
 export function formatDateTime(dateString: string): string {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
