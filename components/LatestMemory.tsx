@@ -94,18 +94,17 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
 
           {/* Photo Preview */}
           {memory.photos && memory.photos.length > 0 && (
-            <div className="latest-memory-photo">
-              <img
-                src={memory.photos[currentPhotoIndex]}
-                alt={`${memory.title} ${currentPhotoIndex + 1}`}
-              />
+            <div className="latest-memory-photo-container">
+              <div className="latest-memory-photo">
+                <img
+                  src={memory.photos[currentPhotoIndex]}
+                  alt={`${memory.title} ${currentPhotoIndex + 1}`}
+                />
+              </div>
               {memory.photos.length > 1 && (
-                <>
-                  <div className="latest-memory-photo-count">
-                    {currentPhotoIndex + 1} / {memory.photos.length}
-                  </div>
+                <div className="latest-memory-controls">
                   <button
-                    className="photo-nav-btn photo-nav-prev"
+                    className="latest-memory-nav-btn"
                     onClick={(e) => {
                       e.stopPropagation();
                       setCurrentPhotoIndex((prev) =>
@@ -116,8 +115,11 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
                   >
                     ◀
                   </button>
+                  <div className="latest-memory-photo-count">
+                    {currentPhotoIndex + 1} / {memory.photos.length}
+                  </div>
                   <button
-                    className="photo-nav-btn photo-nav-next"
+                    className="latest-memory-nav-btn"
                     onClick={(e) => {
                       e.stopPropagation();
                       setCurrentPhotoIndex((prev) =>
@@ -128,7 +130,7 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
                   >
                     ▶
                   </button>
-                </>
+                </div>
               )}
             </div>
           )}
