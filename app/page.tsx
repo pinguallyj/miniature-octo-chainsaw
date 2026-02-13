@@ -975,7 +975,7 @@ export default function Home() {
           exit={{ opacity: 0 }}
           onClick={() => setZoomedPhoto(null)}
         >
-          <div className="lightbox-content" style={{ position: 'relative' }}>
+          <div className="lightbox-content" style={{ position: 'relative', width: '90vw', height: '90vh', maxWidth: '90%', maxHeight: '90%' }}>
             <button className="lightbox-close" onClick={() => setZoomedPhoto(null)}>×</button>
             <Image src={zoomedPhoto} alt="Zoomed" fill style={{ objectFit: 'contain' }} />
           </div>

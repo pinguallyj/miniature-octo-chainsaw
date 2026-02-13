@@ -96,7 +96,7 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
           {/* Photo Preview */}
           {memory.photos && memory.photos.length > 0 && (
             <div className="latest-memory-photo-container">
-              <div className="latest-memory-photo" style={{ position: 'relative' }}>
+              <div className="latest-memory-photo" style={{ position: 'relative', minHeight: '200px' }}>
                 <Image
                   src={memory.photos[currentPhotoIndex]}
                   alt={`${memory.title} ${currentPhotoIndex + 1}`}

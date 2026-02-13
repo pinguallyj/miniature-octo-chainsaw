@@ -131,7 +131,7 @@ export default function MonthView({
                 <div
                   className="memory-photo-thumbnail"
                   onClick={() => openGallery(memory.id)}
-                  style={{ cursor: 'pointer', position: 'relative' }}
+                  style={{ cursor: 'pointer', position: 'relative', aspectRatio: '16/9' }}
                 >
                   <Image src={memory.photos[0]} alt={memory.title} fill style={{ objectFit: 'cover' }} />
                   {memory.photos.length > 1 && (
@@ -162,7 +162,7 @@ export default function MonthView({
                 <button className="gallery-close-btn" onClick={closeGallery}>×</button>
               </div>
               <div className="gallery-modal-body">
-                <div className="gallery-image-container" style={{ position: 'relative' }}>
+                <div className="gallery-image-container" style={{ position: 'relative', width: '100%', height: '65vh' }}>
                   <Image
                     src={galleryMemory.photos[currentPhotoIndex]}
                     alt={`${galleryMemory.title} ${currentPhotoIndex + 1}`}
