@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Memory } from '@/types';
 import { formatDateShort } from '@/lib/utils';
+import RetroImageLoader from '@/components/RetroImageLoader';
 
 interface LatestMemoryProps {
   memory: Memory | null;
@@ -97,7 +98,7 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
           {memory.photos && memory.photos.length > 0 && (
             <div className="latest-memory-photo-container">
               <div className="latest-memory-photo" style={{ position: 'relative' }}>
-                <Image
+                <RetroImageLoader
                   src={memory.photos[currentPhotoIndex]}
                   alt={`${memory.title} ${currentPhotoIndex + 1}`}
                   fill

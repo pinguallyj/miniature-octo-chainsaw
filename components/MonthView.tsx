@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Memory } from '@/types';
+import RetroImageLoader from '@/components/RetroImageLoader';
 
 interface MonthViewProps {
   month: number;
@@ -133,7 +134,7 @@ export default function MonthView({
                   onClick={() => openGallery(memory.id)}
                   style={{ cursor: 'pointer', position: 'relative' }}
                 >
-                  <Image src={memory.photos[0]} alt={memory.title} fill style={{ objectFit: 'cover' }} />
+                  <RetroImageLoader src={memory.photos[0]} alt={memory.title} fill style={{ objectFit: 'cover' }} />
                   {memory.photos.length > 1 && (
                     <div className="memory-photo-badge">
                       +{memory.photos.length - 1} photo{memory.photos.length - 1 !== 1 ? 's' : ''}
@@ -163,7 +164,7 @@ export default function MonthView({
               </div>
               <div className="gallery-modal-body">
                 <div className="gallery-image-container" style={{ position: 'relative' }}>
-                  <Image
+                  <RetroImageLoader
                     src={galleryMemory.photos[currentPhotoIndex]}
                     alt={`${galleryMemory.title} ${currentPhotoIndex + 1}`}
                     className="gallery-modal-image"
