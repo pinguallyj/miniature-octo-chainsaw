@@ -26,12 +26,14 @@ export default function RetroImageLoader({
   onClick,
   priority = false,
 }: RetroImageLoaderProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  // Don't show loading animation for GIFs - they're animated already
+  const isGif = src.toLowerCase().endsWith('.gif');
+  const [isLoading, setIsLoading] = useState(!isGif);
   const [hasError, setHasError] = useState(false);
 
   return (
     <div className={`retro-image-container ${className || ''}`} onClick={onClick}>
-      {isLoading && (
+      {isLoading && !isGif && (
         <div className="retro-loader">
           <div className="retro-loader-content">
             <div className="retro-spinner"></div>
@@ -56,8 +58,8 @@ export default function RetroImageLoader({
         height={!fill ? height : undefined}
         style={{
           objectFit: style?.objectFit || 'cover',
-          opacity: isLoading ? 0 : 1,
-          transition: 'opacity 0.3s ease-in-out',
+          opacity: isGif || !isLoading ? 1 : 0,
+          transition: isGif ? 'none' : 'opacity 0.3s ease-in-out',
         }}
         onLoad={() => setIsLoading(false)}
         onError={() => {
@@ -65,6 +67,7 @@ export default function RetroImageLoader({
           setHasError(true);
         }}
         priority={priority}
+        unoptimized={isGif}
       />
     </div>
   );
