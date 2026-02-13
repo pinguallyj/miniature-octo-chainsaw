@@ -41,25 +41,47 @@ export default function RetroImageLoader({
     }
   }, [isGif, isLoading]);
 
-  // For fill images, don't use wrapper - just return Image directly
+  // For fill images, use an absolute-positioned wrapper so the parent controls dimensions
   if (fill) {
     return (
-      <Image
-        src={src}
-        alt={alt}
-        fill={fill}
-        style={{
-          objectFit: style?.objectFit || 'cover',
-        }}
-        onLoad={() => setIsLoading(false)}
-        onError={() => {
-          setIsLoading(false);
-          setHasError(true);
-        }}
-        priority={priority}
-        unoptimized={isGif}
-        className={className}
-      />
+      <div
+        className={`retro-image-container ${className || ''}`}
+        style={{ position: 'absolute', inset: 0 }}
+        onClick={onClick}
+      >
+        {isLoading && !isGif && (
+          <div className="retro-loader">
+            <div className="retro-loader-content">
+              <div className="retro-spinner"></div>
+              <div className="retro-loader-text">LOADING...</div>
+              <div className="retro-progress-bar">
+                <div className="retro-progress-fill"></div>
+              </div>
+            </div>
+          </div>
+        )}
+        {hasError && (
+          <div className="retro-error">
+            <div className="retro-error-icon">⚠</div>
+            <div className="retro-error-text">ERROR</div>
+          </div>
+        )}
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          style={{
+            objectFit: style?.objectFit || 'cover',
+          }}
+          onLoad={() => setIsLoading(false)}
+          onError={() => {
+            setIsLoading(false);
+            setHasError(true);
+          }}
+          priority={priority}
+          unoptimized={isGif}
+        />
+      </div>
     );
   }
 
