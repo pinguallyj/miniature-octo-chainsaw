@@ -265,13 +265,15 @@ export default function Timeline({
                 <button className="gallery-close-btn" onClick={closeGallery}>×</button>
               </div>
               <div className="gallery-modal-body">
-                <img
-                  src={galleryMemory.photos[currentPhotoIndex]}
-                  alt={`${galleryMemory.title} ${currentPhotoIndex + 1}`}
-                  className="gallery-modal-image"
-                />
+                <div className="gallery-image-container">
+                  <img
+                    src={galleryMemory.photos[currentPhotoIndex]}
+                    alt={`${galleryMemory.title} ${currentPhotoIndex + 1}`}
+                    className="gallery-modal-image"
+                  />
+                </div>
                 {galleryMemory.photos.length > 1 && (
-                  <>
+                  <div className="gallery-controls">
                     <button
                       className="gallery-nav-btn gallery-nav-prev"
                       onClick={() => setCurrentPhotoIndex((prev) =>
@@ -280,6 +282,9 @@ export default function Timeline({
                     >
                       ◀
                     </button>
+                    <div className="gallery-photo-counter">
+                      {currentPhotoIndex + 1} / {galleryMemory.photos.length}
+                    </div>
                     <button
                       className="gallery-nav-btn gallery-nav-next"
                       onClick={() => setCurrentPhotoIndex((prev) =>
@@ -288,10 +293,7 @@ export default function Timeline({
                     >
                       ▶
                     </button>
-                    <div className="gallery-photo-counter">
-                      {currentPhotoIndex + 1} / {galleryMemory.photos.length}
-                    </div>
-                  </>
+                  </div>
                 )}
               </div>
             </div>
