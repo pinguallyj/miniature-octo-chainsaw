@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import imageCompression from 'browser-image-compression';
 import { useLocalStorage } from '@/lib/useLocalStorage';
 import { formConfigs } from '@/lib/formConfigs';
 import { formatDate, formatDateTime, getSectionKey } from '@/lib/utils';
@@ -73,8 +74,31 @@ export default function Home() {
 
     try {
       const photoPromises = Array.from(files).map(async (file) => {
+        let fileToUpload = file;
+
+        // Compress image if it's larger than 1MB
+        if (file.size > 1024 * 1024) {
+          const compressionOptions = {
+            maxSizeMB: 1, // Target 1MB max
+            maxWidthOrHeight: 1920, // Max dimension
+            useWebWorker: true,
+            fileType: file.type as any,
+          };
+
+          try {
+            fileToUpload = await imageCompression(file, compressionOptions);
+            console.log(`Compressed ${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(fileToUpload.size / 1024 / 1024).toFixed(2)}MB`);
+          } catch (compressionError) {
+            console.error('Compression error:', compressionError);
+            // If compression fails, try to upload original if under 4MB
+            if (file.size > 4 * 1024 * 1024) {
+              throw new Error(`File ${file.name} is too large (${(file.size / 1024 / 1024).toFixed(2)}MB) and compression failed`);
+            }
+          }
+        }
+
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('file', fileToUpload);
 
         const response = await fetch('/api/upload', {
           method: 'POST',
