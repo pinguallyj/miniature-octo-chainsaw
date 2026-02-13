@@ -30,7 +30,7 @@ export default function RetroImageLoader({
   const [hasError, setHasError] = useState(false);
 
   return (
-    <div className={`retro-image-container ${className || ''}`} style={style} onClick={onClick}>
+    <div className={`retro-image-container ${className || ''}`} onClick={onClick}>
       {isLoading && (
         <div className="retro-loader">
           <div className="retro-loader-content">
@@ -55,7 +55,6 @@ export default function RetroImageLoader({
         width={!fill ? width : undefined}
         height={!fill ? height : undefined}
         style={{
-          ...style,
           objectFit: style?.objectFit || 'cover',
           opacity: isLoading ? 0 : 1,
           transition: 'opacity 0.3s ease-in-out',
