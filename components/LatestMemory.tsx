@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Memory } from '@/types';
+import { formatDateShort } from '@/lib/utils';
 
 interface LatestMemoryProps {
   memory: Memory | null;
@@ -54,7 +55,10 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
           <h3 className="latest-memory-header-title">Latest Memory ✨</h3>
         </div>
         <span className="latest-memory-date">
-          {new Date(memory.createdAt).toLocaleDateString()}
+          {memory.date
+            ? formatDateShort(memory.date)
+            : formatDateShort(memory.createdAt)
+          }
         </span>
       </div>
 
@@ -66,7 +70,7 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
             <h4>{memory.title}</h4>
             {memory.date && (
               <p>
-                📅 {new Date(memory.date).toLocaleDateString()}
+                📅 {formatDateShort(memory.date)}
               </p>
             )}
             {memory.location && (
