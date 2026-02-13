@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import imageCompression from 'browser-image-compression';
 import { useLocalStorage } from '@/lib/useLocalStorage';
+import { useServerStorage} from "@/lib/useServerStorage";
 import { formConfigs } from '@/lib/formConfigs';
 import { formatDate, formatDateTime, getSectionKey } from '@/lib/utils';
 import { AppData, ItemType, Memory, DatePlan, Restaurant, DateIdea, Book, WatchItem, Game } from '@/types';
@@ -26,7 +27,7 @@ const initialData: AppData = {
 };
 
 export default function Home() {
-  const [data, setData, isLoaded] = useLocalStorage<AppData>('coupleAppData', initialData);
+    const [data, setData, isLoaded] = useServerStorage<AppData>(initialData);
   const [currentView, setCurrentView] = useState<'landing' | 'content'>('landing');
   const [currentSection, setCurrentSection] = useState<string>('memories');
   const [isModalOpen, setIsModalOpen] = useState(false);
