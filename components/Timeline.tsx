@@ -47,8 +47,8 @@ export default function Timeline({
 
   // Sort memories from earliest to latest
   const sortedMemories = [...memories].sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime();
-    const dateB = new Date(b.createdAt).getTime();
+    const dateA = new Date(a.date || a.createdAt).getTime();
+    const dateB = new Date(b.date || b.createdAt).getTime();
     return dateA - dateB;
   });
 
@@ -59,7 +59,7 @@ export default function Timeline({
   let currentMonthYear = '';
 
   sortedMemories.forEach((memory) => {
-    const date = new Date(memory.createdAt);
+    const date = new Date(memory.date || memory.createdAt);
     const monthYear = `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
 
     if (monthYear !== currentMonthYear) {
