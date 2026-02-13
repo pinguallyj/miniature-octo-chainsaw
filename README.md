@@ -174,7 +174,9 @@ Photos are stored in **Vercel Blob** storage for persistent, cloud-based storage
 - ✅ Fast CDN-backed delivery
 - ✅ No file size limitations from browser storage
 - ✅ Photos are accessible across devices (via their URLs stored in localStorage)
+- ✅ Automatic compression for images larger than 1MB (optimized to ~1MB)
 - ℹ️ Requires Vercel Blob to be configured (see Deployment section)
+- ℹ️ Images are automatically compressed before upload to stay under the 4MB server upload limit
 
 ## Customization
 

@@ -15,8 +15,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate file size (max 4MB for server upload)
+    const maxSize = 4 * 1024 * 1024; // 4MB
+    if (file.size > maxSize) {
+      return NextResponse.json(
+        { error: `File too large. Maximum size is ${maxSize / 1024 / 1024}MB` },
+        { status: 413 }
+      );
+    }
+
+    // Create unique filename with timestamp to prevent collisions
+    const timestamp = Date.now();
+    const filename = `${timestamp}-${file.name}`;
+
     // Upload to Vercel Blob
-    const blob = await put(file.name, file, {
+    const blob = await put(filename, file, {
       access: 'public',
     });
 
