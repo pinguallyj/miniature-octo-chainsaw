@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import imageCompression from 'browser-image-compression';
 import { useLocalStorage } from '@/lib/useLocalStorage';
 import { useServerStorage} from "@/lib/useServerStorage";
@@ -225,8 +226,8 @@ export default function Home() {
             {memory.photos && memory.photos.length > 0 && (
               <div className="photo-gallery">
                 {memory.photos.map((photo, idx) => (
-                  <div key={idx} className="photo-item" onClick={() => setZoomedPhoto(photo)}>
-                    <img src={photo} alt={`${memory.title} ${idx + 1}`} />
+                  <div key={idx} className="photo-item" onClick={() => setZoomedPhoto(photo)} style={{ position: 'relative' }}>
+                    <Image src={photo} alt={`${memory.title} ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
                   </div>
                 ))}
               </div>
@@ -657,7 +658,7 @@ export default function Home() {
             >
               <div className="hero-letters">
                   <div className="gif-placeholder left">
-                      <img src="/bulb.gif" alt="Character Z" />
+                      <Image src="/bulb.gif" alt="Character Z" width={100} height={100} />
                   </div>
                 <div className="letters-container">
                   <motion.span
@@ -679,7 +680,7 @@ export default function Home() {
                   </motion.span>
                 </div>
                   <div className="gif-placeholder right">
-                      <img src="/milk.gif" alt="Character S" />
+                      <Image src="/milk.gif" alt="Character S" width={100} height={100} />
                   </div>
               </div>
 
@@ -928,8 +929,8 @@ export default function Home() {
                       <div className="photo-preview-grid">
                         {editingItem?.photos && editingItem.photos.map((photo: string, idx: number) => (
                           !deletedPhotoIndices.includes(idx) && (
-                            <div key={`existing-${idx}`} className="photo-preview-item">
-                              <img src={photo} alt={`Existing ${idx + 1}`} />
+                            <div key={`existing-${idx}`} className="photo-preview-item" style={{ position: 'relative' }}>
+                              <Image src={photo} alt={`Existing ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
                               <button
                                 type="button"
                                 className="photo-remove-btn"
@@ -941,8 +942,8 @@ export default function Home() {
                           )
                         ))}
                         {uploadedPhotos.map((photo, idx) => (
-                          <div key={`new-${idx}`} className="photo-preview-item">
-                            <img src={photo} alt={`New ${idx + 1}`} />
+                          <div key={`new-${idx}`} className="photo-preview-item" style={{ position: 'relative' }}>
+                            <Image src={photo} alt={`New ${idx + 1}`} fill style={{ objectFit: 'cover' }} />
                             <button
                               type="button"
                               className="photo-remove-btn"
@@ -974,9 +975,9 @@ export default function Home() {
           exit={{ opacity: 0 }}
           onClick={() => setZoomedPhoto(null)}
         >
-          <div className="lightbox-content">
+          <div className="lightbox-content" style={{ position: 'relative' }}>
             <button className="lightbox-close" onClick={() => setZoomedPhoto(null)}>×</button>
-            <img src={zoomedPhoto} alt="Zoomed" />
+            <Image src={zoomedPhoto} alt="Zoomed" fill style={{ objectFit: 'contain' }} />
           </div>
         </motion.div>
       )}

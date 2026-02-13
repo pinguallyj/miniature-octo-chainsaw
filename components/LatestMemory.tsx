@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Memory } from '@/types';
 import { formatDateShort } from '@/lib/utils';
 
@@ -95,10 +96,12 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
           {/* Photo Preview */}
           {memory.photos && memory.photos.length > 0 && (
             <div className="latest-memory-photo-container">
-              <div className="latest-memory-photo">
-                <img
+              <div className="latest-memory-photo" style={{ position: 'relative' }}>
+                <Image
                   src={memory.photos[currentPhotoIndex]}
                   alt={`${memory.title} ${currentPhotoIndex + 1}`}
+                  fill
+                  style={{ objectFit: 'cover' }}
                 />
               </div>
               {memory.photos.length > 1 && (
