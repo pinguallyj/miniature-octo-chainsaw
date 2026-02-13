@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface RetroImageLoaderProps {
   src: string;
@@ -31,6 +31,16 @@ export default function RetroImageLoader({
   const [isLoading, setIsLoading] = useState(!isGif);
   const [hasError, setHasError] = useState(false);
 
+  // Fallback timeout - show image after 3 seconds even if onLoad doesn't fire
+  useEffect(() => {
+    if (!isGif && isLoading) {
+      const timeout = setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isGif, isLoading]);
+
   return (
     <div className={`retro-image-container ${className || ''}`} onClick={onClick}>
       {isLoading && !isGif && (
@@ -58,8 +68,6 @@ export default function RetroImageLoader({
         height={!fill ? height : undefined}
         style={{
           objectFit: style?.objectFit || 'cover',
-          opacity: isGif || !isLoading ? 1 : 0,
-          transition: isGif ? 'none' : 'opacity 0.3s ease-in-out',
         }}
         onLoad={() => setIsLoading(false)}
         onError={() => {
