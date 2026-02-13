@@ -407,6 +407,154 @@ body::before {
     background: #ff5252;
 }
 
+/* Memory Photo Thumbnail */
+.memory-photo-thumbnail {
+    position: relative;
+    margin-top: 1rem;
+    border: 3px solid var(--text-primary);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.memory-photo-thumbnail:hover {
+    transform: scale(1.02);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+.memory-photo-thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.memory-photo-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background: var(--text-primary);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+/* Photo Gallery Modal */
+.photo-gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.gallery-modal-content {
+    background: var(--bg-card);
+    border: 4px solid var(--text-primary);
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.gallery-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 3px solid var(--text-primary);
+    background: var(--retro-lavender);
+}
+
+.gallery-modal-header h3 {
+    margin: 0;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+}
+
+.gallery-close-btn {
+    background: #ff6b6b;
+    color: white;
+    border: 2px solid var(--text-primary);
+    width: 32px;
+    height: 32px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.gallery-close-btn:hover {
+    background: #ff5252;
+    transform: scale(1.1);
+}
+
+.gallery-modal-body {
+    position: relative;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+}
+
+.gallery-modal-image {
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border: 3px solid var(--text-primary);
+}
+
+.gallery-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--text-primary);
+    color: white;
+    border: 3px solid white;
+    padding: 1rem 1.2rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    z-index: 10;
+    font-weight: bold;
+}
+
+.gallery-nav-btn:hover {
+    background: var(--cute-green);
+    transform: translateY(-50%) scale(1.15);
+}
+
+.gallery-nav-prev {
+    left: 1rem;
+}
+
+.gallery-nav-next {
+    right: 1rem;
+}
+
+.gallery-photo-counter {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text-primary);
+    color: white;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
 /* Photo Lightbox */
 .photo-lightbox {
     position: fixed;

@@ -1,6 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Memory } from '@/types';
 
 interface MonthViewProps {
@@ -30,9 +31,23 @@ export default function MonthView({
   onPhotoClick
 }: MonthViewProps) {
   const monthName = MONTH_NAMES[month - 1];
+  const [galleryMemoryId, setGalleryMemoryId] = useState<number | null>(null);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
 
   // Filter memories for this month/year
   const monthMemories = memories.filter(m => m.month === month && m.year === year);
+
+  const openGallery = (memoryId: number) => {
+    setGalleryMemoryId(memoryId);
+    setCurrentPhotoIndex(0);
+  };
+
+  const closeGallery = () => {
+    setGalleryMemoryId(null);
+    setCurrentPhotoIndex(0);
+  };
+
+  const galleryMemory = monthMemories.find(m => m.id === galleryMemoryId);
 
   return (
     <div className="month-view-container">
@@ -112,22 +127,73 @@ export default function MonthView({
 
               {/* Photos */}
               {memory.photos && memory.photos.length > 0 && (
-                <div className="photo-gallery">
-                  {memory.photos.map((photo, idx) => (
-                    <div
-                      key={idx}
-                      className="photo-item"
-                      onClick={() => onPhotoClick(photo)}
-                    >
-                      <img src={photo} alt={`Memory ${idx + 1}`} />
+                <div
+                  className="memory-photo-thumbnail"
+                  onClick={() => openGallery(memory.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <img src={memory.photos[0]} alt={memory.title} />
+                  {memory.photos.length > 1 && (
+                    <div className="memory-photo-badge">
+                      +{memory.photos.length - 1} photo{memory.photos.length - 1 !== 1 ? 's' : ''}
                     </div>
-                  ))}
+                  )}
                 </div>
               )}
             </motion.div>
           ))}
         </div>
       )}
+
+      {/* Photo Gallery Modal */}
+      <AnimatePresence>
+        {galleryMemory && galleryMemory.photos && galleryMemory.photos.length > 0 && (
+          <motion.div
+            className="photo-gallery-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeGallery}
+          >
+            <div className="gallery-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="gallery-modal-header">
+                <h3>{galleryMemory.title}</h3>
+                <button className="gallery-close-btn" onClick={closeGallery}>×</button>
+              </div>
+              <div className="gallery-modal-body">
+                <img
+                  src={galleryMemory.photos[currentPhotoIndex]}
+                  alt={`${galleryMemory.title} ${currentPhotoIndex + 1}`}
+                  className="gallery-modal-image"
+                />
+                {galleryMemory.photos.length > 1 && (
+                  <>
+                    <button
+                      className="gallery-nav-btn gallery-nav-prev"
+                      onClick={() => setCurrentPhotoIndex((prev) =>
+                        prev === 0 ? galleryMemory.photos!.length - 1 : prev - 1
+                      )}
+                    >
+                      ◀
+                    </button>
+                    <button
+                      className="gallery-nav-btn gallery-nav-next"
+                      onClick={() => setCurrentPhotoIndex((prev) =>
+                        prev === galleryMemory.photos!.length - 1 ? 0 : prev + 1
+                      )}
+                    >
+                      ▶
+                    </button>
+                    <div className="gallery-photo-counter">
+                      {currentPhotoIndex + 1} / {galleryMemory.photos.length}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
