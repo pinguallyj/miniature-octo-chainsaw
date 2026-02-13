@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Memory } from '@/types';
 
@@ -9,6 +10,8 @@ interface LatestMemoryProps {
 }
 
 export default function LatestMemory({ memory, onViewMemories }: LatestMemoryProps) {
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
   if (!memory) {
     return (
       <motion.div
@@ -89,13 +92,39 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
           {memory.photos && memory.photos.length > 0 && (
             <div className="latest-memory-photo">
               <img
-                src={memory.photos[0]}
-                alt={memory.title}
+                src={memory.photos[currentPhotoIndex]}
+                alt={`${memory.title} ${currentPhotoIndex + 1}`}
               />
               {memory.photos.length > 1 && (
-                <div className="latest-memory-photo-count">
-                  +{memory.photos.length - 1} more
-                </div>
+                <>
+                  <div className="latest-memory-photo-count">
+                    {currentPhotoIndex + 1} / {memory.photos.length}
+                  </div>
+                  <button
+                    className="photo-nav-btn photo-nav-prev"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentPhotoIndex((prev) =>
+                        prev === 0 ? memory.photos!.length - 1 : prev - 1
+                      );
+                    }}
+                    title="Previous photo"
+                  >
+                    ◀
+                  </button>
+                  <button
+                    className="photo-nav-btn photo-nav-next"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentPhotoIndex((prev) =>
+                        prev === memory.photos!.length - 1 ? 0 : prev + 1
+                      );
+                    }}
+                    title="Next photo"
+                  >
+                    ▶
+                  </button>
+                </>
               )}
             </div>
           )}
