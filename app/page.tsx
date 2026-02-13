@@ -34,6 +34,7 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [deletedPhotoIndices, setDeletedPhotoIndices] = useState<number[]>([]);
   const [zoomedPhoto, setZoomedPhoto] = useState<string | null>(null);
 
   // New state for memories reorganization
@@ -58,6 +59,7 @@ export default function Home() {
     setCurrentType(type);
     setEditingItem(item || null);
     setUploadedPhotos([]);
+    setDeletedPhotoIndices([]);
     setIsModalOpen(true);
   };
 
@@ -67,6 +69,7 @@ export default function Home() {
     setSelectedDate(null);
     setEditingItem(null);
     setUploadedPhotos([]);
+    setDeletedPhotoIndices([]);
     // Don't reset selectedMonth/selectedYear here - keep them so we stay in the month view
   };
 
@@ -114,7 +117,9 @@ export default function Home() {
     // Add photos for memories
     if (currentType === 'memory') {
       const existingPhotos = editingItem?.photos || [];
-      item.photos = [...existingPhotos, ...uploadedPhotos];
+      // Filter out deleted photos
+      const remainingPhotos = existingPhotos.filter((_: string, idx: number) => !deletedPhotoIndices.includes(idx));
+      item.photos = [...remainingPhotos, ...uploadedPhotos];
 
       // Set month/year based on selected month or current date
       if (selectedMonth && selectedYear) {
@@ -930,9 +935,18 @@ export default function Home() {
                     {(uploadedPhotos.length > 0 || (editingItem?.photos && editingItem.photos.length > 0)) && (
                       <div className="photo-preview-grid">
                         {editingItem?.photos && editingItem.photos.map((photo: string, idx: number) => (
-                          <div key={`existing-${idx}`} className="photo-preview-item">
-                            <img src={photo} alt={`Existing ${idx + 1}`} />
-                          </div>
+                          !deletedPhotoIndices.includes(idx) && (
+                            <div key={`existing-${idx}`} className="photo-preview-item">
+                              <img src={photo} alt={`Existing ${idx + 1}`} />
+                              <button
+                                type="button"
+                                className="photo-remove-btn"
+                                onClick={() => setDeletedPhotoIndices(prev => [...prev, idx])}
+                              >
+                                ×
+                              </button>
+                            </div>
+                          )
                         ))}
                         {uploadedPhotos.map((photo, idx) => (
                           <div key={`new-${idx}`} className="photo-preview-item">

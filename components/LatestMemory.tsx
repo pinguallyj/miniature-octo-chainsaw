@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Memory } from '@/types';
+import { formatDateShort } from '@/lib/utils';
 
 interface LatestMemoryProps {
   memory: Memory | null;
@@ -9,6 +11,8 @@ interface LatestMemoryProps {
 }
 
 export default function LatestMemory({ memory, onViewMemories }: LatestMemoryProps) {
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
   if (!memory) {
     return (
       <motion.div
@@ -51,7 +55,10 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
           <h3 className="latest-memory-header-title">Latest Memory ✨</h3>
         </div>
         <span className="latest-memory-date">
-          {new Date(memory.createdAt).toLocaleDateString()}
+          {memory.date
+            ? formatDateShort(memory.date)
+            : formatDateShort(memory.createdAt)
+          }
         </span>
       </div>
 
@@ -63,7 +70,7 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
             <h4>{memory.title}</h4>
             {memory.date && (
               <p>
-                📅 {new Date(memory.date).toLocaleDateString()}
+                📅 {formatDateShort(memory.date)}
               </p>
             )}
             {memory.location && (
@@ -87,14 +94,42 @@ export default function LatestMemory({ memory, onViewMemories }: LatestMemoryPro
 
           {/* Photo Preview */}
           {memory.photos && memory.photos.length > 0 && (
-            <div className="latest-memory-photo">
-              <img
-                src={memory.photos[0]}
-                alt={memory.title}
-              />
+            <div className="latest-memory-photo-container">
+              <div className="latest-memory-photo">
+                <img
+                  src={memory.photos[currentPhotoIndex]}
+                  alt={`${memory.title} ${currentPhotoIndex + 1}`}
+                />
+              </div>
               {memory.photos.length > 1 && (
-                <div className="latest-memory-photo-count">
-                  +{memory.photos.length - 1} more
+                <div className="latest-memory-controls">
+                  <button
+                    className="latest-memory-nav-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentPhotoIndex((prev) =>
+                        prev === 0 ? memory.photos!.length - 1 : prev - 1
+                      );
+                    }}
+                    title="Previous photo"
+                  >
+                    ◀
+                  </button>
+                  <div className="latest-memory-photo-count">
+                    {currentPhotoIndex + 1} / {memory.photos.length}
+                  </div>
+                  <button
+                    className="latest-memory-nav-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCurrentPhotoIndex((prev) =>
+                        prev === memory.photos!.length - 1 ? 0 : prev + 1
+                      );
+                    }}
+                    title="Next photo"
+                  >
+                    ▶
+                  </button>
                 </div>
               )}
             </div>

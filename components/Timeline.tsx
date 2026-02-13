@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Memory } from '@/types';
 import { useEffect, useState, useRef } from 'react';
 
@@ -32,20 +32,34 @@ export default function Timeline({
 }: TimelineProps) {
   const [visibleItems, setVisibleItems] = useState(10);
   const observerRef = useRef<HTMLDivElement>(null);
+  const [galleryMemoryId, setGalleryMemoryId] = useState<number | null>(null);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  const openGallery = (memoryId: number) => {
+    setGalleryMemoryId(memoryId);
+    setCurrentPhotoIndex(0);
+  };
+
+  const closeGallery = () => {
+    setGalleryMemoryId(null);
+    setCurrentPhotoIndex(0);
+  };
 
   // Sort memories from earliest to latest
   const sortedMemories = [...memories].sort((a, b) => {
-    const dateA = new Date(a.createdAt).getTime();
-    const dateB = new Date(b.createdAt).getTime();
+    const dateA = new Date(a.date || a.createdAt).getTime();
+    const dateB = new Date(b.date || b.createdAt).getTime();
     return dateA - dateB;
   });
+
+  const galleryMemory = sortedMemories.find(m => m.id === galleryMemoryId);
 
   // Group memories by month/year and create timeline items
   const timelineItems: TimelineItem[] = [];
   let currentMonthYear = '';
 
   sortedMemories.forEach((memory) => {
-    const date = new Date(memory.createdAt);
+    const date = new Date(memory.date || memory.createdAt);
     const monthYear = `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
 
     if (monthYear !== currentMonthYear) {
@@ -184,16 +198,17 @@ export default function Timeline({
 
                         {/* Photos */}
                         {memory.photos && memory.photos.length > 0 && (
-                          <div className="photo-gallery">
-                            {memory.photos.map((photo, idx) => (
-                              <div
-                                key={idx}
-                                className="photo-item"
-                                onClick={() => onPhotoClick(photo)}
-                              >
-                                <img src={photo} alt={`Memory ${idx + 1}`} />
+                          <div
+                            className="memory-photo-thumbnail"
+                            onClick={() => openGallery(memory.id)}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <img src={memory.photos[0]} alt={memory.title} />
+                            {memory.photos.length > 1 && (
+                              <div className="memory-photo-badge">
+                                +{memory.photos.length - 1} photo{memory.photos.length - 1 !== 1 ? 's' : ''}
                               </div>
-                            ))}
+                            )}
                           </div>
                         )}
                       </div>
@@ -233,6 +248,58 @@ export default function Timeline({
           )}
         </div>
       )}
+
+      {/* Photo Gallery Modal */}
+      <AnimatePresence>
+        {galleryMemory && galleryMemory.photos && galleryMemory.photos.length > 0 && (
+          <motion.div
+            className="photo-gallery-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeGallery}
+          >
+            <div className="gallery-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="gallery-modal-header">
+                <h3>{galleryMemory.title}</h3>
+                <button className="gallery-close-btn" onClick={closeGallery}>×</button>
+              </div>
+              <div className="gallery-modal-body">
+                <div className="gallery-image-container">
+                  <img
+                    src={galleryMemory.photos[currentPhotoIndex]}
+                    alt={`${galleryMemory.title} ${currentPhotoIndex + 1}`}
+                    className="gallery-modal-image"
+                  />
+                </div>
+                {galleryMemory.photos.length > 1 && (
+                  <div className="gallery-controls">
+                    <button
+                      className="gallery-nav-btn gallery-nav-prev"
+                      onClick={() => setCurrentPhotoIndex((prev) =>
+                        prev === 0 ? galleryMemory.photos!.length - 1 : prev - 1
+                      )}
+                    >
+                      ◀
+                    </button>
+                    <div className="gallery-photo-counter">
+                      {currentPhotoIndex + 1} / {galleryMemory.photos.length}
+                    </div>
+                    <button
+                      className="gallery-nav-btn gallery-nav-next"
+                      onClick={() => setCurrentPhotoIndex((prev) =>
+                        prev === galleryMemory.photos!.length - 1 ? 0 : prev + 1
+                      )}
+                    >
+                      ▶
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
