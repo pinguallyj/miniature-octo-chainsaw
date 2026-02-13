@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface RetroImageLoaderProps {
   src: string;
@@ -26,12 +26,49 @@ export default function RetroImageLoader({
   onClick,
   priority = false,
 }: RetroImageLoaderProps) {
-  const [isLoading, setIsLoading] = useState(true);
+  // Don't show loading animation for GIFs - they're animated already
+  const isGif = src.toLowerCase().endsWith('.gif');
+  const [isLoading, setIsLoading] = useState(!isGif);
   const [hasError, setHasError] = useState(false);
 
+  // Fallback timeout - show image after 3 seconds even if onLoad doesn't fire
+  useEffect(() => {
+    if (!isGif && isLoading) {
+      const timeout = setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [isGif, isLoading]);
+
+  // For fill images, don't use wrapper - just return Image directly
+  if (fill) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill={fill}
+        style={{
+          objectFit: style?.objectFit || 'cover',
+        }}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setHasError(true);
+        }}
+        priority={priority}
+        unoptimized={isGif}
+        className={className}
+      />
+    );
+  }
+
   return (
-    <div className={`retro-image-container ${className || ''}`} style={style} onClick={onClick}>
-      {isLoading && (
+    <div
+      className={`retro-image-container ${className || ''}`}
+      onClick={onClick}
+    >
+      {isLoading && !isGif && (
         <div className="retro-loader">
           <div className="retro-loader-content">
             <div className="retro-spinner"></div>
@@ -55,10 +92,7 @@ export default function RetroImageLoader({
         width={!fill ? width : undefined}
         height={!fill ? height : undefined}
         style={{
-          ...style,
           objectFit: style?.objectFit || 'cover',
-          opacity: isLoading ? 0 : 1,
-          transition: 'opacity 0.3s ease-in-out',
         }}
         onLoad={() => setIsLoading(false)}
         onError={() => {
@@ -66,6 +100,7 @@ export default function RetroImageLoader({
           setHasError(true);
         }}
         priority={priority}
+        unoptimized={isGif}
       />
     </div>
   );
