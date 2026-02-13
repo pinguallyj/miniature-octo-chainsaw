@@ -31,6 +31,15 @@ export default function RetroImageLoader({
   const [isLoading, setIsLoading] = useState(!isGif);
   const [hasError, setHasError] = useState(false);
 
+  // Reset loading state when src changes (e.g. navigating gallery photos)
+  useEffect(() => {
+    const newIsGif = src.toLowerCase().endsWith('.gif');
+    if (!newIsGif) {
+      setIsLoading(true);
+      setHasError(false);
+    }
+  }, [src]);
+
   // Fallback timeout - show image after 3 seconds even if onLoad doesn't fire
   useEffect(() => {
     if (!isGif && isLoading) {
@@ -39,7 +48,7 @@ export default function RetroImageLoader({
       }, 3000);
       return () => clearTimeout(timeout);
     }
-  }, [isGif, isLoading]);
+  }, [isGif, isLoading, src]);
 
   // For fill images, use an absolute-positioned wrapper so the parent controls dimensions
   if (fill) {
