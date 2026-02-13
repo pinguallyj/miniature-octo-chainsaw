@@ -42,7 +42,10 @@ export default function RetroImageLoader({
   }, [isGif, isLoading]);
 
   return (
-    <div className={`retro-image-container ${className || ''}`} onClick={onClick}>
+    <div
+      className={`retro-image-container ${fill ? 'retro-image-fill' : ''} ${className || ''}`}
+      onClick={onClick}
+    >
       {isLoading && !isGif && (
         <div className="retro-loader">
           <div className="retro-loader-content">

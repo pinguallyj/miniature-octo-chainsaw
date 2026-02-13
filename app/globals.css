@@ -2201,6 +2201,12 @@ button, a, .nav-btn, .add-btn {
     height: 100%;
 }
 
+/* When using fill prop, wrapper needs to absolutely fill its parent */
+.retro-image-container.retro-image-fill {
+    position: absolute;
+    inset: 0;
+}
+
 .retro-loader {
     position: absolute;
     inset: 0;
